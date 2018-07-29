@@ -37,7 +37,8 @@ const styles = StyleSheet.create({
 		width: null,
 		justifyContent: 'center',
 	},
-	
+
+
 	title:{
 		flex:0.1,
 		backgroundColor:'#000',
@@ -56,10 +57,9 @@ const styles = StyleSheet.create({
 
 });
 
-export default class InformeDiario extends React.Component {
+export default class InformeSemanal extends React.Component {
 	
 	render() {
-		const menu  = this.props.navigation;
 		return (
 			<View style={styles.container}>
 				
@@ -81,7 +81,7 @@ export default class InformeDiario extends React.Component {
 				</View>
 					
 				<View style={styles.title}>
-				<Image source={require('../icons/ICONO-INFORME-DIARIO.png')} style={{marginTop:15, marginRight:5}} /><Text style={styles.texttitle}>INFORME DIARIO</Text>
+				<Image source={require('../icons/ICONO-INFORME-SEMANAL.png')} style={{marginTop:15, marginRight:5}} /><Text style={styles.texttitle}>INFORME SEMANAL</Text>
 				</View>
 				
 				<ImageBackground source={require('../images/fondopag.png')} style={styles.backgroundImage}>

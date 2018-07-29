@@ -133,13 +133,7 @@ export default class Login extends React.Component {
 						onPress={() => {
 							this.props.navigation.navigate('DrawerToggle');
 						}}
-					>
-					
-						
-							<Icon name="md-menu" size={30} color='#000'  />
-							
-							
-						
+					>	
 					</TouchableOpacity>
 					<Image source={require('../images/header.png')} style={{width:200, height:40, marginLeft:20}}></Image>
 
