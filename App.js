@@ -15,26 +15,28 @@ const RootDrawer = DrawerNavigator(
 	{
 		'LOGIN': {
 			screen: Login,
+
 		},
-		"INFORME DIARIO":{
+		"INFORME DIARIO": {
 			screen: InformeDiario,
 		},
-		"INFORME SEMANAL":{
+		"INFORME SEMANAL": {
 			screen: InformeSemanal,
 		},
-		"INFORME MENSUAL":{
+		"INFORME MENSUAL": {
 			screen: InformeMensual,
 		},
-		"INFORME TRIMESTRAL":{
+		"INFORME TRIMESTRAL": {
 			screen: InformeTrimestral,
 		},
-		"INFORME ANUAL":{
+		"INFORME ANUAL": {
 			screen: InformeAnual,
 		},
 	},
 	{
 		// Custom rendering component of drawer panel
 		contentComponent: MainDrawer,
+		drawerWidth: 220
 	}
 );
 
