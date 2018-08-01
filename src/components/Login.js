@@ -115,7 +115,8 @@ const styles = StyleSheet.create({
 		fontSize: 13,
 		textAlign: 'center',
 		color: '#6F7372',
-		textAlignVertical: 'center'
+		textAlignVertical: 'center',
+		paddingHorizontal:10
 	},
 });
 
