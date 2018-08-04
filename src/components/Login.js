@@ -134,7 +134,7 @@ export default class Login extends React.Component {
 		loginRequest("login", {user:this.state.user, pass:this.state.password, cdAplicacion:"APP_MOVIL"}).then((val)=>{
 			if(val.valid){
 				AsyncStorage.setItem("userInfo", JSON.stringify(val));
-				this.props.navigation.navigate('INFORME DIARIO');
+				this.props.navigation.navigate('ESTADO ACTUAL DE LOS COMERCIOS');
 			}else{
 			}	
 		})
@@ -181,7 +181,7 @@ export default class Login extends React.Component {
 									<Text style={styles.buttonText}>INGRESAR</Text>
 								</TouchableOpacity>
 							</View>
-							<View style={{ alignContent: 'center', flexDirection: 'row', alignItems: "center", marginBottom: 20 }}>
+							<View style={{ alignContent: 'center', flexDirection: 'row', alignItems: "center", marginBottom: 20, display:"none" }}>
 								<TouchableOpacity onPress={this.login} style={styles.buttonsecond} >
 									<Text style={styles.buttonText1}>Registrarse</Text>
 								</TouchableOpacity>
