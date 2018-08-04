@@ -8,6 +8,7 @@ import InformeSemanal from './src/components/InformeSemanal';
 import InformeMensual from './src/components/InformeMensual';
 import InformeTrimestral from './src/components/InformeTrimestral';
 import InformeAnual from './src/components/InformeAnual';
+import Menu from './src/components/Menu';
 
 
 // RootDrawer containing drawers for each components
@@ -15,6 +16,13 @@ const RootDrawer = DrawerNavigator(
 	{
 		'LOGIN': {
 			screen: Login,
+			navigationOptions:{
+				drawerLockMode:'locked-closed'
+			}
+
+		},
+		'ESTADO ACTUAL DE LOS COMERCIOS': {
+			screen: Menu,
 
 		},
 		"INFORME DIARIO": {
@@ -26,17 +34,17 @@ const RootDrawer = DrawerNavigator(
 		"INFORME MENSUAL": {
 			screen: InformeMensual,
 		},
-		"INFORME TRIMESTRAL": {
+		/*"INFORME TRIMESTRAL": {
 			screen: InformeTrimestral,
 		},
 		"INFORME ANUAL": {
 			screen: InformeAnual,
-		},
+		},*/
 	},
 	{
 		// Custom rendering component of drawer panel
 		contentComponent: MainDrawer,
-		drawerWidth: 220
+		drawerWidth: 250
 	}
 );
 

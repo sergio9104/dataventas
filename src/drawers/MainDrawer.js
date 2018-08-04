@@ -3,12 +3,11 @@ import {
 	View,
 	Text,
 	ScrollView,
-	Image
-
+	Image,
 } from 'react-native';
 
 import { DrawerItems } from 'react-navigation';
-
+import { Ionicons as Icon } from '@expo/vector-icons';
 
 
 class MainDrawer extends Component {
@@ -20,17 +19,19 @@ class MainDrawer extends Component {
 	drawerIcon(value) {
 		switch (value) {
 			case "INFORME DIARIO":
-				return require("../icons/ICONO-INFORME-DIARIO.png")
+				return (<Image source={require("../icons/ICONO-INFORME-DIARIO.png") }/>)
 			case "INFORME SEMANAL":
-				return require("../icons/ICONO-INFORME-SEMANAL.png")
+				return (<Image source={require("../icons/ICONO-INFORME-SEMANAL.png")}/>)
 			case "INFORME MENSUAL":
-				return require("../icons/ICONO-INFORME-MENSUAL.png")
+				return (<Image source={require("../icons/ICONO-INFORME-MENSUAL.png")}/>)
 			case "INFORME TRIMESTRAL":
-				return require("../icons/ICONO-TRIMESTRAL.png")
+				return (<Image source={require("../icons/ICONO-TRIMESTRAL.png")}/>)
 			case "INFORME ANUAL":
-				return require("../icons/ICONO-ANUAL.png")
+				return (<Image source={require("../icons/ICONO-ANUAL.png")}/>)
+			case "LOGIN":
+			return (<Icon  name="sign-out" size={20} color='#FFF' />)
 			default:
-				return require("../icons/ICONO-INFORME-DIARIO.png")
+				return(<Image source={require("../icons/ICONO-INFORME-DIARIO.png")}/>)
 		}
 	}
 
@@ -43,7 +44,7 @@ class MainDrawer extends Component {
 					{...this.props}
 					getLabel={(scene) => (
 						<View style={{ borderBottomWidth: 1, borderBottomColor: 'gray', width: '100%', flexDirection: "row", alignItems: "center", paddingVertical: 10 }}>
-							<View style={{ width: 50, alignItems: "center" }} ><Image source={this.drawerIcon(this.props.getLabel(scene))} /></View><Text style={{ color: "#FFF", margin: 10 }} >{this.props.getLabel(scene)}</Text>
+							<View style={{ width: 50, alignItems: "center" }}>{this.drawerIcon(this.props.getLabel(scene))}</View><Text style={{ color: "#FFF", margin: 10 }} >{this.props.getLabel(scene)}</Text>
 						</View>
 					)}
 				/>
