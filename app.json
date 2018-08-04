@@ -1,5 +1,15 @@
 {
   "expo": {
-    "sdkVersion": "27.0.0"
+    "name": "Dataventas",
+    "version": "1.0.0",
+    "icon": "./logo.jpg",
+    "slug": "Dataventas-slug",
+    "sdkVersion": "27.0.0",
+    "ios": {
+      "bundleIdentifier": "com.tecnofactor.dataventas"
+    },
+    "android": {
+      "package": "com.tecnofactor.dataventas"
+    }
   }
 }

@@ -1,3 +1,5 @@
+import { AsyncStorage } from "react-native"
+
 export const evaluateOuterDrawerListItems = items => {
 	const drawerItems = {};
 	items.forEach((item, index) => {
@@ -22,3 +24,42 @@ export const evaluateOuterDrawerListItems = items => {
 export const evaluateChildDrawerTitle = ({ navigation }) => ({
 	title: navigation.state.key.substr(navigation.state.key.indexOf('_') + 1),
 });
+
+const url = "http://seguridad-pru.us-east-2.elasticbeanstalk.com/";
+
+export const request = (dir, data, fn) => {
+	AsyncStorage.getItem("session", (val) => {
+		if (val) {
+			fn(
+				fetch(url + dir, {
+					method: 'post',
+					headers: {
+						'Content-Type': 'application/json',
+						'autorization': val
+					},
+					body: JSON.stringify({ ...data })
+				}).then(function (val) {
+					return val.json();
+				})
+			)
+		} else {
+			fn(() => {
+				return false;
+			})
+		}
+	});
+
+}
+
+export const loginRequest = (dir, data) => {
+	return fetch(url + dir, {
+			method: 'post',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ ...data })
+		}).then(function (val) {
+			return val.json();
+		})
+	
+}
