@@ -119,6 +119,13 @@ const styles = StyleSheet.create({
 		textAlignVertical: 'center',
 		paddingHorizontal: 10
 	},
+	buttonText4:{
+		color:'red',
+		paddingHorizontal:20,
+		textAlign:'center',
+		fontWeigth:'bolder'
+	
+	}
 });
 
 export default class Login extends React.Component {
@@ -126,10 +133,13 @@ export default class Login extends React.Component {
 		super(props);
 		this.state = {
 			user: null,
-			password: null
+			password: null,
+			msgError:null
 		}
 		
 	}
+
+	c
 
 	login(){
 		loginRequest("login", {user:this.state.user, pass:this.state.password, cdAplicacion:"APP_MOVIL"}).then((val)=>{
@@ -137,7 +147,7 @@ export default class Login extends React.Component {
 				AsyncStorage.setItem("userInfo", JSON.stringify(val));
 				this.props.navigation.navigate('ESTADO ACTUAL DE LOS COMERCIOS');
 			}else{
-				
+				this.setState({msgError:val.msn})
 			}	
 		})
 		
@@ -178,6 +188,9 @@ export default class Login extends React.Component {
 									onChangeText={(value) => {this.setState({password:value})}} />
 
 							</View>
+							<View style={{ alignContent: 'center', flexDirection: 'row', }}>
+								<Text style={styles.buttonText4}>{this.state.msgError}</Text>
+							</View>
 							<View style={{ alignContent: 'center', justifyContent: 'center' }}>
 								<TouchableOpacity onPress={() => this.login() } style={styles.buttonContaines}>
 									<Text style={styles.buttonText}>INGRESAR</Text>
@@ -198,6 +211,7 @@ export default class Login extends React.Component {
 							<View style={{ alignContent: 'center', flexDirection: 'row', }}>
 								<Text style={styles.buttonText3}>DataVentas es una herramienta tecnológica inteligente enfocada en conocer a profundidad tus clientes para lograr crecimiento en ventas </Text>
 							</View>
+
 						</View>
 					</ScrollView>
 				</ImageBackground>
