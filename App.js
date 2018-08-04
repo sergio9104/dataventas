@@ -14,13 +14,7 @@ import Menu from './src/components/Menu';
 // RootDrawer containing drawers for each components
 const RootDrawer = DrawerNavigator(
 	{
-		'LOGIN': {
-			screen: Login,
-			navigationOptions:{
-				drawerLockMode:'locked-closed'
-			}
 
-		},
 		'ESTADO ACTUAL DE LOS COMERCIOS': {
 			screen: Menu,
 
@@ -40,11 +34,19 @@ const RootDrawer = DrawerNavigator(
 		"INFORME ANUAL": {
 			screen: InformeAnual,
 		},*/
+		'SALIR': {
+			screen: Login,
+			navigationOptions:{
+				drawerLockMode:'locked-closed'
+			}
+
+		},
 	},
 	{
 		// Custom rendering component of drawer panel
 		contentComponent: MainDrawer,
-		drawerWidth: 250
+		drawerWidth: 250,
+		initialRouteName:'SALIR'
 	}
 );
 

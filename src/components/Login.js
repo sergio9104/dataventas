@@ -128,6 +128,7 @@ export default class Login extends React.Component {
 			user: null,
 			password: null
 		}
+		
 	}
 
 	login(){
@@ -136,6 +137,7 @@ export default class Login extends React.Component {
 				AsyncStorage.setItem("userInfo", JSON.stringify(val));
 				this.props.navigation.navigate('ESTADO ACTUAL DE LOS COMERCIOS');
 			}else{
+				
 			}	
 		})
 		
