@@ -9,9 +9,10 @@ import {
 	View,
 	Platform,
 	ImageBackground,
-	Image
+	Image,
+	AsyncStorage
 } from 'react-native';
-
+import { request, loginRequest } from "./../utils.js";
 
 const styles = StyleSheet.create({
 	container: {
@@ -116,14 +117,30 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		color: '#6F7372',
 		textAlignVertical: 'center',
-		paddingHorizontal:10
+		paddingHorizontal: 10
 	},
 });
 
 export default class Login extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			user: null,
+			password: null
+		}
+	}
 
+	login(){
+		loginRequest("login", {user:this.state.user, pass:this.state.password, cdAplicacion:"APP_MOVIL"}).then((val)=>{
+			if(val.valid){
+				AsyncStorage.setItem("userInfo", JSON.stringify(val));
+				this.props.navigation.navigate('INFORME DIARIO');
+			}else{
+			}	
+		})
+		
+	}
 	render() {
-		const menu = this.props.navigation;
 		return (
 			<View style={styles.container}>
 				<StatusBar barStyle="dark-content" />
@@ -135,25 +152,32 @@ export default class Login extends React.Component {
 					>
 					</TouchableOpacity>
 					<Image source={require('../images/header.png')} style={{ width: 200, height: 40, marginLeft: 20 }}></Image>
-
 				</View>
-
-
 				<ImageBackground source={require('../images/fondo.png')} style={styles.backgroundImage}>
 					<ScrollView style={styles.login}>
 						<View style={styles.loginconten}>
 
 							<View style={styles.inputContainer}>
-								<Text style={styles.logintext}>USUARIO:</Text><TextInput underlineColorAndroid='transparent' style={styles.input} placeholder='Username'>
-								</TextInput>
+								<Text style={styles.logintext}>USUARIO:</Text>
+								<TextInput
+									value={this.state.user}
+									underlineColorAndroid='transparent'
+									onChangeText={(value) => {this.setState({user:value})}}
+									style={styles.input}
+									placeholder='Username' />
 							</View>
 							<View style={styles.inputContainer}>
-								<Text style={styles.logintext}>CONTRASEÑA:</Text><TextInput secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input} placeholder='Password'>
-								</TextInput>
+								<Text style={styles.logintext}>CONTRASEÑA:</Text>
+								<TextInput value={this.state.password}
+									secureTextEntry={true} 
+									underlineColorAndroid='transparent'
+									style={styles.input} 
+									placeholder='Password'
+									onChangeText={(value) => {this.setState({password:value})}} />
 
 							</View>
 							<View style={{ alignContent: 'center', justifyContent: 'center' }}>
-								<TouchableOpacity onPress={() => menu.navigate('INFORME DIARIO')} style={styles.buttonContaines}>
+								<TouchableOpacity onPress={() => this.login() } style={styles.buttonContaines}>
 									<Text style={styles.buttonText}>INGRESAR</Text>
 								</TouchableOpacity>
 							</View>
@@ -173,14 +197,8 @@ export default class Login extends React.Component {
 								<Text style={styles.buttonText3}>DataVentas es una herramienta tecnológica inteligente enfocada en conocer a profundidad tus clientes para lograr crecimiento en ventas </Text>
 							</View>
 						</View>
-
 					</ScrollView>
 				</ImageBackground>
-
-
-
-
-
 			</View>
 		);
 	}

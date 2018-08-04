@@ -28,14 +28,14 @@ export const evaluateChildDrawerTitle = ({ navigation }) => ({
 const url = "http://seguridad-pru.us-east-2.elasticbeanstalk.com/";
 
 export const request = (dir, data, fn) => {
-	AsyncStorage.getItem("session", (val) => {
+	AsyncStorage.getItem("userInfo", (err,val) => {
 		if (val) {
 			fn(
 				fetch(url + dir, {
 					method: 'post',
 					headers: {
 						'Content-Type': 'application/json',
-						'autorization': val
+						'autorization': JSON.parse(val).token 
 					},
 					body: JSON.stringify({ ...data })
 				}).then(function (val) {
@@ -44,7 +44,7 @@ export const request = (dir, data, fn) => {
 			)
 		} else {
 			fn(() => {
-				return false;
+				return new Promise(false);
 			})
 		}
 	});

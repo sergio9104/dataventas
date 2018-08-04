@@ -15,6 +15,9 @@ const RootDrawer = DrawerNavigator(
 	{
 		'LOGIN': {
 			screen: Login,
+			navigationOptions:{   
+				drawerLockMode:'locked-closed', 
+		   }
 
 		},
 		"INFORME DIARIO": {
