@@ -59,10 +59,7 @@ const styles = StyleSheet.create({
        
     },
     textMenu:{
-        marginBotton:100,
-        height:40,
-        
-        
+        height:40
     },
     textinfo:{
         fontSize:10
