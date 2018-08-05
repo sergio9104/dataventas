@@ -213,7 +213,8 @@ export default class InformeSemanal extends React.Component {
 									de
 				{' '}
 									{this.state.monthNames[this.state.showValue.getMonth()]}
-									{' '}
+									{' del '}
+									{this.state.showValue.getFullYear()}
 								</Text>
 									
 							<Text style={{ color: "#959595", marginBottom: 20, textAlign:"center" }}>

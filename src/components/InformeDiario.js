@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { Ionicons as Icon } from '@expo/vector-icons';
 import Arc from './Arc.js';
+import { request} from "./../utils.js";
 
 
 const styles = StyleSheet.create({
@@ -103,17 +104,7 @@ export default class InformeDiario extends React.Component {
 	};
 
 	componentDidMount = () => {
-		AsyncStorage.getItem('DATA', (err, result) => {
-			if (result) {
-				this.setState({ inputValue: result }, () => {
-					this.setState({
-						promedioVentas: this.promedioVentas()
-					}, () => {
-						this.getData();
-					});
-				});
-			}
-		});
+		this.getData();
 	}
 
 	clearData = () => {
@@ -128,7 +119,11 @@ export default class InformeDiario extends React.Component {
 	}
 
 	getData() {
-
+		request("consumos_ambiente/consultaventascomercio-ambiente",{m:"4",periodo:"M"}, (res)=>{
+			res.then((res) =>{
+				console.log(res);
+			})
+		})
 	}
 
 
@@ -216,7 +211,8 @@ export default class InformeDiario extends React.Component {
 									de
 				{' '}
 									{this.state.monthNames[this.state.showValue.getMonth()]}
-									{' '}
+									{' del '}
+									{this.state.showValue.getFullYear()}
 								</Text>
 									
 							<Text style={{ color: "#959595", marginBottom: 20, textAlign:"center" }}>

@@ -103,17 +103,7 @@ export default class InformeSemanal extends React.Component {
 	};
 
 	componentDidMount = () => {
-		AsyncStorage.getItem('DATA', (err, result) => {
-			if (result) {
-				this.setState({ inputValue: result }, () => {
-					this.setState({
-						promedioVentas: this.promedioVentas()
-					}, () => {
-						this.getData();
-					});
-				});
-			}
-		});
+		this.getData();
 	}
 
 	clearData = () => {
@@ -217,7 +207,8 @@ export default class InformeSemanal extends React.Component {
 									de
 				{' '}
 									{this.state.monthNames[this.state.showValue.getMonth()]}
-									{' '}
+									{' del '}
+									{this.state.showValue.getFullYear()}
 								</Text>
 									
 							<Text style={{ color: "#959595", marginBottom: 20, textAlign:"center" }}>
@@ -232,10 +223,6 @@ export default class InformeSemanal extends React.Component {
 							<View style={{alignItems: 'center',
 							paddingHorizontal: 10,
 						width:300}}>
-
-							
-						
-
 							<Arc
 								r={100}
 								percentage={this.state.perc}

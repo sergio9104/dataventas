@@ -12,7 +12,7 @@ import {
 	Image,
 	AsyncStorage
 } from 'react-native';
-import { request, loginRequest } from "./../utils.js";
+import { loginRequest } from "./../utils.js";
 
 const styles = StyleSheet.create({
 	container: {

@@ -8,9 +8,7 @@ import {
 	View,
 	Platform,
 	ImageBackground,
-	Image,
-	RefreshControl,
-	AsyncStorage,
+	Image
 } from 'react-native';
 import { Ionicons as Icon } from '@expo/vector-icons';
 
