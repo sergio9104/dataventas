@@ -28,10 +28,10 @@ class MainDrawer extends Component {
 				return (<Image source={require("../icons/ICONO-TRIMESTRAL.png")}/>)
 			case "INFORME ANUAL":
 				return (<Image source={require("../icons/ICONO-ANUAL.png")}/>)
-			case "LOGIN":
+			case "SALIR":
 			return (<Icon  name="ios-exit-outline" size={26} color='#FFF' />)
 			default:
-				return(<Image source={require("../icons/ICONO-INFORME-DIARIO.png")}/>)
+				return(<Image source={require("../icons/ICONO-ANUAL.png")}/>)
 		}
 	}
 

@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
 		color:'red',
 		paddingHorizontal:20,
 		textAlign:'center',
-		fontWeigth:'bolder'
+		fontWeight:'bold'
 	
 	}
 });
