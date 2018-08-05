@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
   Text,
   View
 } from 'react-native';
@@ -8,72 +7,80 @@ import Svg, { Circle, Path, Text as SvgText } from 'react-native-svg';
 
 export default class Arc extends Component {
   constructor(props) {
-    super();
+    super(props);
+
+    this.state = {
+      endAngle: 0,
+      largeArc: 0,
+    };
+  }
+
+  componentDidMount(){
+    this.angle(this.props.startAngle);
+  }
+
+  angle(angle){
     let endAngle = Math.PI / 2;
-    if (props.startAngle > endAngle) {
-      var s = props.startAngle;
-      props.startAngle = endAngle;
+    if (angle > endAngle) {
+      var s = angle;
+      angle = endAngle;
       endAngle = s;
     }
-    if (endAngle - props.startAngle > Math.PI * 2) {
+    if (endAngle - angle > Math.PI * 2) {
       endAngle = Math.PI * 1.99999;
     }
 
-    var largeArc = endAngle - props.startAngle <= Math.PI ? 0 : 1;
+    var largeArc = endAngle - angle <= Math.PI ? 0 : 1;
+    this.setState({largeArc, endAngle})
+  }
 
-    this.state = {
-      r: props.r,
-      startAngle: props.startAngle,
-      endAngle: endAngle,
-      largeArc: largeArc,
-      fill: props.fill,
-      opacity: props.opacity,
-      text: props.text,
-      textCenter: props.textCenter,
-      isPrincipal: props.isPrincipal,
-    };
+
+  componentWillReceiveProps(nextProps){
+    if(this.props.startAngle != nextProps.startAngle){
+      this.angle(nextProps.startAngle);
+    }
   }
 
   render() {
     return (
       <View>
-        <Svg width={this.state.r * 2} height={this.state.r * 2}>
+        <Svg width={this.props.r * 2} height={this.props.r * 2}>
           <Circle
-            cx={this.state.r}
-            cy={this.state.r}
-            r={this.state.r - 0.5}
+            cx={this.props.r}
+            cy={this.props.r}
+            r={this.props.r - 0.5}
             fill="#E5E5E5"
           />
           <Path
-            d={`M ${this.state.r} ${this.state.r} 
-              L ${this.state.r + Math.cos(this.state.startAngle) * this.state.r} ${this.state.r - Math.sin(this.state.startAngle) * this.state.r}
-              A ${this.state.r} ${this.state.r} 0 ${this.state.largeArc} 0 ${this.state.r + Math.cos(this.state.endAngle) * this.state.r} ${this.state.r - Math.sin(this.state.endAngle) * this.state.r}
-              L ${this.state.r} ${this.state.r}
+            d={`M ${this.props.r} ${this.props.r} 
+              L ${this.props.r + Math.cos(this.props.startAngle) * this.props.r} ${this.props.r - Math.sin(this.props.startAngle) * this.props.r}
+              A ${this.props.r} ${this.props.r} 0 ${this.state.largeArc} 0 ${this.props.r + Math.cos(this.state.endAngle) * this.props.r} ${this.props.r - Math.sin(this.state.endAngle) * this.props.r}
+              L ${this.props.r} ${this.props.r}
               `}
-            fill={this.state.fill}
-            opacity={this.state.opacity}
+            fill={this.props.fill}
+            opacity={this.props.opacity}
           />
 
           <Circle
-            cx={this.state.r}
-            cy={this.state.r}
-            r={this.state.r * 0.8}
+            cx={this.props.r}
+            cy={this.props.r}
+            r={this.props.r * 0.8}
             fill="white"
           />
           <SvgText
-            x={this.state.r}
+            x={this.props.r}
             y={
-              this.state.r - (this.state.r / 5)
+              this.props.r - (this.props.r / 5)
             }
             fill={"#989898"}
             textAnchor="middle"
             fontSize={
-              this.state.r / 4
+              this.props.r / 4
             }
             dy={
-              this.state.r / 4
+              this.props.r / 4
             }>
-            {this.state.textCenter}
+            {this.props.textCenter}
           </SvgText>
         </Svg>
         <Text
@@ -83,7 +90,7 @@ export default class Arc extends Component {
             fontSize: 12,
           }}
           color={"#989898"}>
-          {this.state.text}
+          {this.props.text}
         </Text>
       </View>
     );
