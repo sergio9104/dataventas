@@ -130,14 +130,6 @@ export default class InformeSemanal extends React.Component {
 
 	}
 
-	porcentaje = val => {
-		if (val > 99.99) {
-			val = 100;
-		}
-		let x = 1.9999 * val / 100;
-		return -Math.PI * (x - 0.49999);
-	};
-
 	promedioVentas = () => {
 		let total = 0;
 		for (let value of this.state.data) {
@@ -242,7 +234,7 @@ export default class InformeSemanal extends React.Component {
 
 							<Arc
 								r={100}
-								startAngle={this.porcentaje(this.state.perc)}
+								percentage={this.state.perc}
 								fill="#74BA74"
 								opacity={1}
 								textCenter={
@@ -261,7 +253,7 @@ export default class InformeSemanal extends React.Component {
 								<TouchableOpacity style={styles.chartsSpace} onPress={() => { }}>
 									<Arc
 										r={40}
-										startAngle={this.porcentaje(100)}
+										percentage={100}
 										fill={"#74BA74"}
 										opacity={1}
 										text={"COMERCIO1"}
@@ -272,7 +264,7 @@ export default class InformeSemanal extends React.Component {
 								<TouchableOpacity style={styles.chartsSpace} onPress={() => { }}>
 									<Arc
 										r={40}
-										startAngle={this.porcentaje(50)}
+										percentage={50}
 										fill={"#82D8F9"}
 										opacity={1}
 										text={"COMERCIO2"}
@@ -283,7 +275,7 @@ export default class InformeSemanal extends React.Component {
 								<TouchableOpacity style={styles.chartsSpace} onPress={() => { }}>
 									<Arc
 										r={40}
-										startAngle={this.porcentaje(80)}
+										percentage={80}
 										fill={"#82D8F9"}
 										opacity={1}
 										text={"COMERCIO3"}
@@ -294,7 +286,7 @@ export default class InformeSemanal extends React.Component {
 								<TouchableOpacity style={styles.chartsSpace} onPress={() => { }}>
 									<Arc
 										r={40}
-										startAngle={this.porcentaje(80)}
+										percentage={80}
 										fill={"#82D8F9"}
 										opacity={1}
 										text={"COMERCIO4"}
@@ -305,7 +297,7 @@ export default class InformeSemanal extends React.Component {
 								<TouchableOpacity style={styles.chartsSpace} onPress={() => { }}>
 									<Arc
 										r={40}
-										startAngle={this.porcentaje(5)}
+										percentage={5}
 										fill={"#FE5655"}
 										opacity={1}
 										text={"COMERCIO5"}
@@ -316,7 +308,7 @@ export default class InformeSemanal extends React.Component {
 								<TouchableOpacity style={styles.chartsSpace} onPress={() => { }}>
 									<Arc
 										r={40}
-										startAngle={this.porcentaje(80)}
+										percentage={80}
 										fill={"#82D8F9"}
 										opacity={1}
 										text={"COMERCIO6"}

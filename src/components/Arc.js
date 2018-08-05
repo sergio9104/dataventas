@@ -12,14 +12,15 @@ export default class Arc extends Component {
     this.state = {
       endAngle: 0,
       largeArc: 0,
+      percentage:0
     };
   }
 
-  componentDidMount(){
-    this.angle(this.props.startAngle);
+  componentDidMount() {
+    this.graphArc(this.rad(this.props.percentage));
   }
 
-  angle(angle){
+  graphArc(angle) {
     let endAngle = Math.PI / 2;
     if (angle > endAngle) {
       var s = angle;
@@ -31,13 +32,21 @@ export default class Arc extends Component {
     }
 
     var largeArc = endAngle - angle <= Math.PI ? 0 : 1;
-    this.setState({largeArc, endAngle})
+    this.setState({ largeArc, endAngle,  percentage:angle})
   }
 
+  rad(val) {
+    if (val > 99.99) {
+      val = 100;
+    }
+    let x = 1.9999 * val / 100;
+    return -Math.PI * (x - 0.49999);
+  };
 
-  componentWillReceiveProps(nextProps){
-    if(this.props.startAngle != nextProps.startAngle){
-      this.angle(nextProps.startAngle);
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.percentage != nextProps.percentage) {
+      this.graphArc(this.rad(nextProps.percentage));
     }
   }
 
@@ -53,7 +62,7 @@ export default class Arc extends Component {
           />
           <Path
             d={`M ${this.props.r} ${this.props.r} 
-              L ${this.props.r + Math.cos(this.props.startAngle) * this.props.r} ${this.props.r - Math.sin(this.props.startAngle) * this.props.r}
+              L ${this.props.r + Math.cos(this.state.percentage) * this.props.r} ${this.props.r - Math.sin(this.state.percentage) * this.props.r}
               A ${this.props.r} ${this.props.r} 0 ${this.state.largeArc} 0 ${this.props.r + Math.cos(this.state.endAngle) * this.props.r} ${this.props.r - Math.sin(this.state.endAngle) * this.props.r}
               L ${this.props.r} ${this.props.r}
               `}
