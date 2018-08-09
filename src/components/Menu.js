@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
 		alignSelf: 'stretch',
 		width: null,
 		justifyContent: 'center',
+		paddingTop:20
 	},
 
 	title: {

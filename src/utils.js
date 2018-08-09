@@ -28,18 +28,19 @@ export const evaluateChildDrawerTitle = ({ navigation }) => ({
 const url = "http://seguridad-pru.us-east-2.elasticbeanstalk.com/";
 const url2 = "https://j864ogth2l.execute-api.us-east-2.amazonaws.com/";
 
+export const ambiente = "qa";
+
 export const request = (dir, data, fn) => {
 	AsyncStorage.getItem("userInfo", (err,val) => {
-		console.log({ ...data, idComercio:JSON.parse(val).data.atributosUsuario[0].dsValor});
 		if (val) {
 			fn(
 				fetch(url2 + dir, {
 					method: 'post',
 					headers: {
-						'Content-Type': 'application/json',
+						'content-type': 'application/json',
 						'authorization': JSON.parse(val).token 
 					},
-					body: JSON.stringify({ ...data, idComercio:JSON.parse(val).data.atributosUsuario[0].dsValor})
+					body: JSON.stringify({ idComercio:JSON.parse(val).data.atributosUsuario[0].dsValor, ...data})
 				}).then(function (val) {
 					return val.json();
 				})

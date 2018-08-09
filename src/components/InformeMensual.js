@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { Ionicons as Icon } from '@expo/vector-icons';
 import Arc from './Arc.js';
+import { request, ambiente } from "./../utils.js";
 
 
 const styles = StyleSheet.create({
@@ -52,23 +53,23 @@ const styles = StyleSheet.create({
 		marginLeft: 10
 
 	},
-	chartsSpace:{
-		marginHorizontal:5,
-		marginVertical:5
+	chartsSpace: {
+		marginHorizontal: 5,
+		marginVertical: 5
 	}
 
 
 
 });
-export default class InformeSemanal extends React.Component {
+
+export default class InformeMensual extends React.Component {
 	constructor() {
 		super();
 		this.state = {
 			showGraph: false,
-			inputValue: '',
-			perc: 100,
-			valueToday: 1250870,
-			data: [],
+			perc: 0,
+			valueToday: 0,
+			data: [{}],
 			day: ['Dom.', 'Lun.', 'Mar.', 'Mie.', 'Jue.', 'Vie.', 'Sab.'],
 			dayComplete: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
 			monthNames: [
@@ -85,34 +86,22 @@ export default class InformeSemanal extends React.Component {
 				'noviembre',
 				'diciembre',
 			],
-			today: new Date(),
-			showValue: new Date(),
 			promedioVentas: 0,
 			refreshing: false,
 			error: '',
+			nombreComercio: "",
+			fechaReferencia: "",
+			actualView: "consultasVentasGrupo",
+			nombreComercio:""
 		};
 	}
-
-	_handleTextChange = inputValue => {
-		this.setState({ inputValue });
-	};
 
 	_handleButtonPress = () => {
 		this.getData();
 	};
 
 	componentDidMount = () => {
-		AsyncStorage.getItem('DATA', (err, result) => {
-			if (result) {
-				this.setState({ inputValue: result }, () => {
-					this.setState({
-						promedioVentas: this.promedioVentas()
-					}, () => {
-						this.getData();
-					});
-				});
-			}
-		});
+		this.getData();
 	}
 
 	clearData = () => {
@@ -121,60 +110,337 @@ export default class InformeSemanal extends React.Component {
 			showGraph: false,
 			refreshing: false,
 			perc: 0,
-			valueToday: 0,
-			data: []
+			valueToday: 0
 		});
 	}
 
 	getData() {
-
-	}
-
-	promedioVentas = () => {
-		let total = 0;
-		for (let value of this.state.data) {
-			total = total + value.totalVentasDia;
-		}
-
-		return total / this.state.data.length;
-	};
-
-	ventasHoy = () => {
-		this.state.data.map((value, index) => {
-			if (
-				new Date(value.fechaReferencia).getFullYear() ===
-				this.state.today.getFullYear() &&
-				new Date(value.fechaReferencia).getMonth() ===
-				this.state.today.getMonth() &&
-				new Date(value.fechaReferencia).getDate() == this.state.today.getDate()
-			) {
-
-				let newItem = this.state.data.slice();
-				newItem[index].color = "#2fcc37";
-				this.setState({ perc: value.porcentajeVentas, valueToday: value.totalVentasDia, data: newItem, showValue: new Date(value.fechaReferencia), showGraph: false }, () => {
-					this.setState({ showGraph: true });
-				});
-			}
+		this.setState({ refreshing: true });
+		request("consumos_"+ambiente+"/consultaventasgrupo-"+ambiente, { m: 4, periodo: "M" }, (res) => {
+			res.then((res) => {
+				if (res.datosPeriodos) {
+					this.setState({
+						data: res.datosPeriodos,
+						perc: res.datosPeriodos[0].porcentajeVentas,
+						valueToday: res.datosPeriodos[0].totalVentasDia,
+						promedioVentas: res.totalVentasPeriodosAnteriores,
+						nombreComercio: res.nombreGrupoComercio,
+						refreshing: false,
+						fechaReferencia: res.datosPeriodos[0].fechaReferencia,
+						error: "",
+						actualView:"consultasVentasGrupo",
+						nombreComercio:res.nombreGrupoComercio
+					});
+				} else {
+					this.setState({ error: "No se han encontrado información", refreshing: false })
+				}
+			})
 		})
-
-	};
-
-	valueResetColor = (index, value) => {
-		let newItem = this.state.data.slice();
-		newItem.map((value) => {
-			value.color = "white";
-			return value;
-		});
-		newItem[index].color = "#2fcc37";
-
-		this.setState({ perc: value.porcentajeVentas, valueToday: value.totalVentasDia, data: newItem, showGraph: false, showValue: new Date(value.fechaReferencia) }, () => {
-			this.setState({ showGraph: true });
-		});
 	}
+
+	getDetalleVentaGrupo(fechaReferencia) {
+		this.setState({ refreshing: true });
+		request("consumos_"+ambiente+"/consultadetalleventasgrupo-"+ambiente, { fecha: fechaReferencia, periodo: "M" }, (res) => {
+			res.then((res) => {
+				if (res.datosComercios[0]) {
+					this.setState({
+						data: res.datosComercios,
+						perc: res.datosComercios[0].porcentajeVentasPeriodo,
+						valueToday: res.datosComercios[0].totalVentasPeriodo,
+						promedioVentas: res.totalVentasPeriodo,
+						nombreComercio: res.nombreGrupoComercio,
+						refreshing: false,
+						fechaReferencia: res.fechaString,
+						error: "",
+						actualView:"consultaDetalleVentasGrupo",
+						nombreComercio:res.nombreGrupoComercio
+					});
+				} else {
+					this.setState({ error: "No se han encontrado información", refreshing: false })
+				}
+
+			})
+		})
+	}
+
+	getVentasComercio(idComercio) {
+		this.setState({ refreshing: true });
+		request("consumos_"+ambiente+"/consultaventascomercio-"+ambiente, {idComercio:idComercio, m: 4, periodo: "M" }, (res) => {
+			res.then((res) => {
+				if (res.datosPeriodos) {
+					this.setState({
+						data: res.datosPeriodos,
+						perc: res.datosPeriodos[0].porcentajeVentas,
+						valueToday: res.datosPeriodos[0].totalVentasDia,
+						promedioVentas: res.totalVentasPeriodosAnteriores,
+						nombreComercio: res.nombreGrupoComercio,
+						refreshing: false,
+						fechaReferencia: res.datosPeriodos[0].fechaReferencia,
+						error: "",
+						actualView:"consultaVentasComercio",
+						nombreComercio:res.nombreGrupoComercio
+					});
+				} else {
+					this.setState({ error: "No se han encontrado información", refreshing: false })
+				}
+			})
+		})
+	}
+
+	getColor(val) {
+		if (val >= 100) {
+			return "#74BA74"
+		} else if (val >= 50) {
+			return "#82D8F9"
+		} else {
+			return "#FE5655"
+		}
+	}
+
+	consultasVentasGrupo(){
+	return	<ScrollView
+		refreshControl={
+			<RefreshControl
+				refreshing={this.state.refreshing}
+				onRefresh={this.getData.bind(this)}
+			/>
+		}>
+
+		<Text style={{ color: "#76BA75", fontSize: 20, marginTop: 20, textAlign: "center", marginBottom: 10 }}>
+			{this.state.data[0].fechaString}
+		</Text>
+
+		<Text style={{ color: "#959595", marginBottom: 20, textAlign: "center", paddingHorizontal: 20 }}>
+			Información en tiempo real de ventas totales de {this.state.nombreComercio}
+			</Text>
+
+		<View style={{
+			flexDirection: "row",
+			flexWrap: "wrap",
+			justifyContent: "center",
+			alignItems: "center"
+		}}>
+			<View style={{
+				alignItems: 'center',
+				paddingHorizontal: 10,
+				width: 300
+			}}>
+				<TouchableOpacity style={styles.chartsSpace} onPress={() => { this.getDetalleVentaGrupo(this.state.fechaReferencia) }}>
+					<Arc
+						r={100}
+						percentage={this.state.perc}
+						fill={this.getColor(this.state.perc)}
+						opacity={1}
+						textCenter={
+							'$' +
+							Math.floor(this.state.valueToday + 0.5)
+								.toFixed()
+								.replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')
+						}
+					/>
+				</TouchableOpacity >
+
+				<Text style={{ color: "#FE5655", textAlign: "center", paddingHorizontal: 20 }}>
+					{this.state.error}
+				</Text>
+
+				<View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20, marginTop: 10 }}><Text>TOTAL VENTA PERIODO</Text>
+					<Text style={{ color: "white", backgroundColor: "#74BA74", paddingHorizontal: 20, paddingVertical: 5, marginLeft: 20, fontWeight: "bold" }}>{'$' + Math.floor(this.state.promedioVentas + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')}</Text></View>
+			</View>
+			<View style={{
+				flexDirection: "row", flexWrap: "wrap", justifyContent: "center",
+				width: 300
+			}}>
+				{this.state.data.map((val, index) => {
+					if (index == 0) {
+						return null;
+					} else {
+						return <TouchableOpacity key={index} style={styles.chartsSpace} onPress={() => { this.getDetalleVentaGrupo(val.fechaReferencia) }}>
+							<Arc
+								r={40}
+								percentage={val.porcentajeVentas}
+								fill={this.getColor(val.porcentajeVentas)}
+								opacity={1}
+								text={val.fechaCortaString}
+								textCenter={Math.floor(val.porcentajeVentas + 0.5) + '%'}
+							/>
+						</TouchableOpacity >
+					}
+
+				})}
+			</View>
+		</View>
+	</ScrollView>
+	}
+
+	consultaDetalleVentasGrupo(){
+	return	<ScrollView
+		refreshControl={
+			<RefreshControl
+				refreshing={this.state.refreshing}
+				onRefresh={() => this.getDetalleVentaGrupo(this.state.fechaReferencia)}
+			/>
+		}>
+
+		<Text style={{ color: "#76BA75", fontSize: 20, marginTop: 20, textAlign: "center", marginBottom: 10 }}>
+			{this.state.fechaReferencia}
+		</Text>
+
+		<Text style={{ color: "#959595", marginBottom: 20, textAlign: "center", paddingHorizontal: 20 }}>
+			Información en tiempo real de ventas totales de {this.state.nombreComercio}
+			</Text>
+
+		<View style={{
+			flexDirection: "row",
+			flexWrap: "wrap",
+			justifyContent: "center",
+			alignItems: "center"
+		}}>
+			<View style={{
+				alignItems: 'center',
+				paddingHorizontal: 10,
+				width: 300
+			}}>
+				<TouchableOpacity style={styles.chartsSpace} onPress={() => { this.getVentasComercio(this.state.data[0].idComercio) }}>
+					<Arc
+						r={100}
+						percentage={this.state.perc}
+						fill={this.getColor(this.state.perc)}
+						opacity={1}
+						textCenter={
+							'$' +
+							Math.floor(this.state.valueToday + 0.5)
+								.toFixed()
+								.replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')
+						}
+					/>
+				</TouchableOpacity >
+
+				<Text style={{ color: "#FE5655", textAlign: "center", paddingHorizontal: 20 }}>
+					{this.state.error}
+				</Text>
+
+				<View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20, marginTop: 10 }}><Text>TOTAL VENTA PERIODO</Text>
+					<Text style={{ color: "white", backgroundColor: "#74BA74", paddingHorizontal: 20, paddingVertical: 5, marginLeft: 20, fontWeight: "bold" }}>{'$' + Math.floor(this.state.promedioVentas + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')}</Text></View>
+			</View>
+			<View style={{
+				flexDirection: "row", flexWrap: "wrap", justifyContent: "center",
+				width: 300
+			}}>
+				{this.state.data.map((val, index) => {
+					if (index == 0) {
+						return null;
+					} else {
+						return <TouchableOpacity key={index} style={styles.chartsSpace} onPress={() => { this.getVentasComercio(val.idComercio) }}>
+							<Arc
+								r={40}
+								percentage={val.porcentajeVentasPeriodo}
+								fill={this.getColor(val.porcentajeVentasPeriodo)}
+								opacity={1}
+								text={val.nombreComercio}
+								textCenter={Math.floor(val.porcentajeVentasPeriodo + 0.5) + '%'}
+							/>
+						</TouchableOpacity >
+					}
+
+				})}
+			</View>
+		</View>
+		</ScrollView>
+	}
+
+	consultaVentasComercio(){
+		return <ScrollView
+		refreshControl={
+			<RefreshControl
+				refreshing={this.state.refreshing}
+				onRefresh={this.getData.bind(this)}
+			/>
+		}>
+
+		<Text style={{ color: "#76BA75", fontSize: 20, marginTop: 20, textAlign: "center", marginBottom: 10 }}>
+			{this.state.data[0].fechaString}
+		</Text>
+
+		<Text style={{ color: "#959595", marginBottom: 20, textAlign: "center", paddingHorizontal: 20 }}>
+			Información en tiempo real de ventas totales de {this.state.nombreComercio}
+			</Text>
+
+		<View style={{
+			flexDirection: "row",
+			flexWrap: "wrap",
+			justifyContent: "center",
+			alignItems: "center"
+		}}>
+			<View style={{
+				alignItems: 'center',
+				paddingHorizontal: 10,
+				width: 300
+			}}>
+				<View style={styles.chartsSpace}>
+					<Arc
+						r={100}
+						percentage={this.state.perc}
+						fill={this.getColor(this.state.perc)}
+						opacity={1}
+						textCenter={
+							'$' +
+							Math.floor(this.state.valueToday + 0.5)
+								.toFixed()
+								.replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')
+						}
+					/>
+				</View >
+
+				<Text style={{ color: "#FE5655", textAlign: "center", paddingHorizontal: 20 }}>
+					{this.state.error}
+				</Text>
+
+				<View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20, marginTop: 10 }}><Text>TOTAL VENTA PERIODO</Text>
+					<Text style={{ color: "white", backgroundColor: "#74BA74", paddingHorizontal: 20, paddingVertical: 5, marginLeft: 20, fontWeight: "bold" }}>{'$' + Math.floor(this.state.promedioVentas + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')}</Text></View>
+			</View>
+			<View style={{
+				flexDirection: "row", flexWrap: "wrap", justifyContent: "center",
+				width: 300
+			}}>
+				{this.state.data.map((val, index) => {
+					if (index == 0) {
+						return null;
+					} else {
+						return <View key={index} style={styles.chartsSpace}>
+							<Arc
+								r={40}
+								percentage={val.porcentajeVentas}
+								fill={this.getColor(val.porcentajeVentas)}
+								opacity={1}
+								text={val.fechaCortaString}
+								textCenter={Math.floor(val.porcentajeVentas + 0.5) + '%'}
+							/>
+						</View >
+					}
+
+				})}
+			</View>
+		</View>
+	</ScrollView>
+	}
+
+
+	getState(state){
+		if(state == "consultasVentasGrupo"){
+			return this.consultasVentasGrupo()
+		}else if (state == "consultaDetalleVentasGrupo"){
+			return this.consultaDetalleVentasGrupo();
+		}else if (state == "consultaVentasComercio"){
+			return this.consultaVentasComercio();
+		}
+	}
+
 
 	render() {
 		return (
 			<View style={styles.container}>
+
 				<View style={styles.header}>
 					<TouchableOpacity
 						onPress={() => {
@@ -188,140 +454,13 @@ export default class InformeSemanal extends React.Component {
 				</View>
 
 				<View style={styles.title}>
-					<Image source={require('../icons/ICONO-INFORME-MENSUAL.png')} /><Text style={styles.texttitle}>INFORME MENSUAL</Text>
+				<Image source={require('../icons/ICONO-INFORME-MENSUAL.png')} /><Text style={styles.texttitle}>INFORME MENSUAL</Text>
 				</View>
 				<ImageBackground source={require('../images/fondopag.png')} style={styles.backgroundImage}>
-					<ScrollView
-						refreshControl={
-							<RefreshControl
-								refreshing={this.state.refreshing}
-								onRefresh={this.getData.bind(this)}
-							/>
-						}>
-						
-						<Text style={{ color: "#76BA75", fontSize: 20, marginTop: 10, textAlign:"center" }}>
-									{(
-										this.state.showValue.getFullYear() ===
-										this.state.today.getFullYear() &&
-										this.state.showValue.getMonth() ===
-										this.state.today.getMonth() &&
-										this.state.showValue.getDate() == this.state.today.getDate()
-									) ? "hoy" : this.state.dayComplete[this.state.showValue.getDay()]},
-                {' '}
-									{this.state.showValue.getDate()}
-									{' '}
-									de
-				{' '}
-									{this.state.monthNames[this.state.showValue.getMonth()]}
-									{' del '}
-									{this.state.showValue.getFullYear()}
-								</Text>
-									
-							<Text style={{ color: "#959595", marginBottom: 20, textAlign:"center" }}>
-								Información en tiempo real de ventas totales del grupo de comercio
-							</Text>
-								<View style={{
-							flexDirection:"row",
-							flexWrap:"wrap",
-							justifyContent:"center",
-							alignItems:"center"
-						}}>
-							<View style={{alignItems: 'center',
-							paddingHorizontal: 10,
-						width:300}}>
-
-							
-						
-
-							<Arc
-								r={100}
-								percentage={this.state.perc}
-								fill="#74BA74"
-								opacity={1}
-								textCenter={
-									'$' +
-									Math.floor(this.state.valueToday + 0.5)
-										.toFixed()
-										.replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')
-								}
-							/>
-
-							<View style={{flexDirection:"row", alignItems:"center", marginBottom:5}}><Text>TOTAL VENTA MES</Text><Text style={{color:"white", backgroundColor:"#74BA74", paddingHorizontal:20, paddingVertical:5, marginLeft:20, fontWeight:"bold"}}>$1.000.000</Text></View>
-							<View><Text>TOTAL DE LAS VENTAS SEMANA 4-10 JUNIO</Text></View>
-							</View>
-							<View style={{flexDirection:"row", flexWrap:"wrap", justifyContent:"center",
-						width:300}}>
-								<TouchableOpacity style={styles.chartsSpace} onPress={() => { }}>
-									<Arc
-										r={40}
-										percentage={100}
-										fill={"#74BA74"}
-										opacity={1}
-										text={"COMERCIO1"}
-										textCenter={Math.floor(100 + 0.5) + '%'}
-										onPress={() => { }}
-									/>
-								</TouchableOpacity >
-								<TouchableOpacity style={styles.chartsSpace} onPress={() => { }}>
-									<Arc
-										r={40}
-										percentage={50}
-										fill={"#82D8F9"}
-										opacity={1}
-										text={"COMERCIO2"}
-										textCenter={Math.floor(50 + 0.5) + '%'}
-										onPress={() => { }}
-									/>
-								</TouchableOpacity >
-								<TouchableOpacity style={styles.chartsSpace} onPress={() => { }}>
-									<Arc
-										r={40}
-										percentage={80}
-										fill={"#82D8F9"}
-										opacity={1}
-										text={"COMERCIO3"}
-										textCenter={Math.floor(80 + 0.5) + '%'}
-										onPress={() => { }}
-									/>
-								</TouchableOpacity >
-								<TouchableOpacity style={styles.chartsSpace} onPress={() => { }}>
-									<Arc
-										r={40}
-										percentage={80}
-										fill={"#82D8F9"}
-										opacity={1}
-										text={"COMERCIO4"}
-										textCenter={Math.floor(80 + 0.5) + '%'}
-										onPress={() => { }}
-									/>
-								</TouchableOpacity >
-								<TouchableOpacity style={styles.chartsSpace} onPress={() => { }}>
-									<Arc
-										r={40}
-										percentage={5}
-										fill={"#FE5655"}
-										opacity={1}
-										text={"COMERCIO5"}
-										textCenter={Math.floor(5 + 0.5) + '%'}
-										onPress={() => { }}
-									/>
-								</TouchableOpacity >
-								<TouchableOpacity style={styles.chartsSpace} onPress={() => { }}>
-									<Arc
-										r={40}
-										percentage={80}
-										fill={"#82D8F9"}
-										opacity={1}
-										text={"COMERCIO6"}
-										textCenter={Math.floor(80 + 0.5) + '%'}
-										onPress={() => { }}
-									/>
-								</TouchableOpacity >
-							</View>
-						</View>
-					</ScrollView>
+						{this.getState(this.state.actualView)}
 				</ImageBackground>
 			</View>
 		);
 	}
 }
+
