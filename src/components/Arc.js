@@ -96,7 +96,7 @@ export default class Arc extends Component {
           style={{
             textAlign: 'center',
             color: "#989898",
-            fontSize: 12,
+            fontSize: 8,
           }}
           color={"#989898"}>
           {this.props.text}

@@ -96,10 +96,6 @@ export default class menu extends React.Component {
 					<Image source={require('../images/header.png')} style={{ width: 200, height: 40, marginLeft: 20 }}></Image>
 
 				</View>
-
-				<View style={styles.title}>
-					<Image source={require('../icons/ICONO-INFORME-DIARIO.png')} /><Text style={styles.texttitle}>ESTADO ACTUAL DE LOS COMERCIOS</Text>
-				</View>
 				<ImageBackground source={require('../images/fondopag.png')} style={styles.backgroundImage}>
 					<ScrollView>
                         <View style={styles.ScrollMenu}>

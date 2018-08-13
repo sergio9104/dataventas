@@ -69,7 +69,7 @@ export default class InformeSemanal extends React.Component {
 			showGraph: false,
 			perc: 0,
 			valueToday: 0,
-			data: [{}],
+			data: [],
 			day: ['Dom.', 'Lun.', 'Mar.', 'Mie.', 'Jue.', 'Vie.', 'Sab.'],
 			dayComplete: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
 			monthNames: [
@@ -92,7 +92,7 @@ export default class InformeSemanal extends React.Component {
 			nombreComercio: "",
 			fechaReferencia: "",
 			actualView: "consultasVentasGrupo",
-			nombreComercio:""
+			nombreComercio: ""
 		};
 	}
 
@@ -116,8 +116,9 @@ export default class InformeSemanal extends React.Component {
 
 	getData() {
 		this.setState({ refreshing: true });
-		request("consumos_"+ambiente+"/consultaventasgrupo-"+ambiente, { m: 4, periodo: "S" }, (res) => {
+		request("consumos_" + ambiente + "/consultaventasgrupo-" + ambiente, { m: 4, periodo: "S" }, (res) => {
 			res.then((res) => {
+				console.log(res);
 				if (res.datosPeriodos) {
 					this.setState({
 						data: res.datosPeriodos,
@@ -128,11 +129,11 @@ export default class InformeSemanal extends React.Component {
 						refreshing: false,
 						fechaReferencia: res.datosPeriodos[0].fechaReferencia,
 						error: "",
-						actualView:"consultasVentasGrupo",
-						nombreComercio:res.nombreGrupoComercio
+						actualView: "consultasVentasGrupo",
+						nombreComercio: res.nombreGrupoComercio
 					});
 				} else {
-					this.setState({ error: "No se han encontrado información", refreshing: false })
+					this.setState({ error: "Actualmente no se encuentran datos", refreshing: false })
 				}
 			})
 		})
@@ -140,8 +141,9 @@ export default class InformeSemanal extends React.Component {
 
 	getDetalleVentaGrupo(fechaReferencia) {
 		this.setState({ refreshing: true });
-		request("consumos_"+ambiente+"/consultadetalleventasgrupo-"+ambiente, { fecha: fechaReferencia, periodo: "S" }, (res) => {
+		request("consumos_" + ambiente + "/consultadetalleventasgrupo-" + ambiente, { fecha: fechaReferencia, periodo: "S" }, (res) => {
 			res.then((res) => {
+				console.log(res);
 				if (res.datosComercios[0]) {
 					this.setState({
 						data: res.datosComercios,
@@ -152,11 +154,11 @@ export default class InformeSemanal extends React.Component {
 						refreshing: false,
 						fechaReferencia: res.fechaString,
 						error: "",
-						actualView:"consultaDetalleVentasGrupo",
-						nombreComercio:res.nombreGrupoComercio
+						actualView: "consultaDetalleVentasGrupo",
+						nombreComercio: res.nombreGrupoComercio
 					});
 				} else {
-					this.setState({ error: "No se han encontrado información", refreshing: false })
+					this.setState({ error: "Actualmente no se encuentran datos", refreshing: false })
 				}
 
 			})
@@ -165,8 +167,9 @@ export default class InformeSemanal extends React.Component {
 
 	getVentasComercio(idComercio) {
 		this.setState({ refreshing: true });
-		request("consumos_"+ambiente+"/consultaventascomercio-"+ambiente, {idComercio:idComercio, m: 4, periodo: "S" }, (res) => {
+		request("consumos_" + ambiente + "/consultaventascomercio-" + ambiente, { idComercio: idComercio, m: 4, periodo: "S" }, (res) => {
 			res.then((res) => {
+				console.log(res);
 				if (res.datosPeriodos) {
 					this.setState({
 						data: res.datosPeriodos,
@@ -177,11 +180,11 @@ export default class InformeSemanal extends React.Component {
 						refreshing: false,
 						fechaReferencia: res.datosPeriodos[0].fechaReferencia,
 						error: "",
-						actualView:"consultaVentasComercio",
-						nombreComercio:res.nombreGrupoComercio
+						actualView: "consultaVentasComercio",
+						nombreComercio: res.nombreGrupoComercio
 					});
 				} else {
-					this.setState({ error: "No se han encontrado información", refreshing: false })
+					this.setState({ error: "Actualmente no se encuentran datos", refreshing: false })
 				}
 			})
 		})
@@ -197,67 +200,62 @@ export default class InformeSemanal extends React.Component {
 		}
 	}
 
-	consultasVentasGrupo(){
-	return	<ScrollView
-		refreshControl={
-			<RefreshControl
-				refreshing={this.state.refreshing}
-				onRefresh={this.getData.bind(this)}
-			/>
-		}>
+	consultasVentasGrupo() {
+		return <ScrollView
+			refreshControl={
+				<RefreshControl
+					refreshing={this.state.refreshing}
+					onRefresh={this.getData.bind(this)}
+				/>
+			}>
 
-		<Text style={{ color: "#76BA75", fontSize: 20, marginTop: 20, textAlign: "center", marginBottom: 10 }}>
-			{this.state.data[0].fechaString}
-		</Text>
-
-		<Text style={{ color: "#959595", marginBottom: 20, textAlign: "center", paddingHorizontal: 20 }}>
-			Información en tiempo real de ventas totales de {this.state.nombreComercio}
+			<Text style={{ color: "#76BA75", fontSize: 20, marginTop: 20, textAlign: "center", marginBottom: 10 }}>
+				{this.state.data[0] ? this.state.data[0].fechaString : null}
 			</Text>
 
-		<View style={{
-			flexDirection: "row",
-			flexWrap: "wrap",
-			justifyContent: "center",
-			alignItems: "center"
-		}}>
-			<View style={{
-				alignItems: 'center',
-				paddingHorizontal: 10,
-				width: 300
-			}}>
-				<TouchableOpacity style={styles.chartsSpace} onPress={() => { this.getDetalleVentaGrupo(this.state.fechaReferencia) }}>
-					<Arc
-						r={100}
-						percentage={this.state.perc}
-						fill={this.getColor(this.state.perc)}
-						opacity={1}
-						textCenter={
-							'$' +
-							Math.floor(this.state.valueToday + 0.5)
-								.toFixed()
-								.replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')
-						}
-					/>
-				</TouchableOpacity >
+			<Text style={{ color: "#959595", marginBottom: 20, textAlign: "center", paddingHorizontal: 20 }}>
+				Información en tiempo real de ventas totales de {this.state.nombreComercio}
+			</Text>
 
-				<Text style={{ color: "#FE5655", textAlign: "center", paddingHorizontal: 20 }}>
-					{this.state.error}
-				</Text>
-
-				<View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20, marginTop: 10 }}><Text>TOTAL VENTA PERIODO</Text>
-					<Text style={{ color: "white", backgroundColor: "#74BA74", paddingHorizontal: 20, paddingVertical: 5, marginLeft: 20, fontWeight: "bold" }}>{'$' + Math.floor(this.state.promedioVentas + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')}</Text></View>
-			</View>
 			<View style={{
-				flexDirection: "row", flexWrap: "wrap", justifyContent: "center",
-				width: 300
+				flexDirection: "row",
+				flexWrap: "wrap",
+				justifyContent: "center",
+				alignItems: "center"
 			}}>
-				{this.state.data.map((val, index) => {
-					if (index == 0) {
-						return null;
-					} else {
+				<View style={{
+					alignItems: 'center',
+					paddingHorizontal: 20,
+					width: 250
+				}}>
+					<TouchableOpacity style={styles.chartsSpace} onPress={() => { this.getDetalleVentaGrupo(this.state.fechaReferencia) }}>
+						<Arc
+							r={80}
+							percentage={this.state.perc}
+							fill={this.getColor(this.state.perc)}
+							opacity={1}
+							textCenter={
+								'$' +
+								Math.floor(this.state.valueToday + 0.5)
+									.toFixed()
+									.replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')
+							}
+						/>
+					</TouchableOpacity >
+
+					<Text style={{ color: "#FE5655", textAlign: "center", paddingHorizontal: 20 }}>
+						{this.state.error}
+					</Text>
+
+
+				</View>
+				<View style={{
+					flexDirection: "row-reverse", flexWrap: "wrap", justifyContent: "space-between", paddingHorizontal: 10, maxWidth: 350
+				}}>
+					{this.state.data.map((val, index) => {
 						return <TouchableOpacity key={index} style={styles.chartsSpace} onPress={() => { this.getDetalleVentaGrupo(val.fechaReferencia) }}>
 							<Arc
-								r={40}
+								r={35}
 								percentage={val.porcentajeVentas}
 								fill={this.getColor(val.porcentajeVentas)}
 								opacity={1}
@@ -265,75 +263,90 @@ export default class InformeSemanal extends React.Component {
 								textCenter={Math.floor(val.porcentajeVentas + 0.5) + '%'}
 							/>
 						</TouchableOpacity >
-					}
 
-				})}
+
+					})}
+				</View>
+				<View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginBottom: 20, marginTop: 10, width: "100%" }}>
+					<Text style={{ color: "white", backgroundColor: "#74BA74", paddingHorizontal: 20, paddingVertical: 5, marginLeft: 20, fontWeight: "bold" }}>TOTAL: {'$' + Math.floor(this.state.promedioVentas + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')}</Text>
+				</View>
+				<View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 20, marginTop: 10, width: "100%", paddingHorizontal: 30 }}>
+					<View style={{ justifyContent: "center", alignItems: "center" }}>
+						<Image source={require("../icons/VENTAS.png")} />
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>Numero de ventas</Text>
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>{this.state.data[0] ? this.state.data[0].numeroVentas : null}</Text>
+					</View>
+					<View style={{ justifyContent: "center", alignItems: "center" }}>
+						<Image source={require("../icons/CLIENTES.png")} />
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>Clientes fidelizados</Text>
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>{this.state.data[0] ? this.state.data[0].clientesFidelizados : null}</Text>
+					</View>
+					<View style={{ justifyContent: "center", alignItems: "center" }}>
+						<Image source={require("../icons/TICKET.png")} />
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>Promedio ticket</Text>
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>{this.state.data[0] ? this.state.data[0].promedioTicket : null}</Text>
+					</View>
+				</View>
 			</View>
-		</View>
-	</ScrollView>
+		</ScrollView>
 	}
 
-	consultaDetalleVentasGrupo(){
-	return	<ScrollView
-		refreshControl={
-			<RefreshControl
-				refreshing={this.state.refreshing}
-				onRefresh={() => this.getDetalleVentaGrupo(this.state.fechaReferencia)}
-			/>
-		}>
+	consultaDetalleVentasGrupo() {
+		return <ScrollView
+			refreshControl={
+				<RefreshControl
+					refreshing={this.state.refreshing}
+					onRefresh={() => this.getDetalleVentaGrupo(this.state.fechaReferencia)}
+				/>
+			}>
 
-		<Text style={{ color: "#76BA75", fontSize: 20, marginTop: 20, textAlign: "center", marginBottom: 10 }}>
-			{this.state.fechaReferencia}
-		</Text>
-
-		<Text style={{ color: "#959595", marginBottom: 20, textAlign: "center", paddingHorizontal: 20 }}>
-			Información en tiempo real de ventas totales de {this.state.nombreComercio}
+			<Text style={{ color: "#76BA75", fontSize: 20, marginTop: 20, textAlign: "center", marginBottom: 10 }}>
+				{this.state.fechaReferencia}
 			</Text>
 
-		<View style={{
-			flexDirection: "row",
-			flexWrap: "wrap",
-			justifyContent: "center",
-			alignItems: "center"
-		}}>
-			<View style={{
-				alignItems: 'center',
-				paddingHorizontal: 10,
-				width: 300
-			}}>
-				<TouchableOpacity style={styles.chartsSpace} onPress={() => { this.getVentasComercio(this.state.data[0].idComercio) }}>
-					<Arc
-						r={100}
-						percentage={this.state.perc}
-						fill={this.getColor(this.state.perc)}
-						opacity={1}
-						textCenter={
-							'$' +
-							Math.floor(this.state.valueToday + 0.5)
-								.toFixed()
-								.replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')
-						}
-					/>
-				</TouchableOpacity >
+			<Text style={{ color: "#959595", marginBottom: 20, textAlign: "center", paddingHorizontal: 20 }}>
+				Información en tiempo real de ventas totales de {this.state.nombreComercio}
+			</Text>
 
-				<Text style={{ color: "#FE5655", textAlign: "center", paddingHorizontal: 20 }}>
-					{this.state.error}
-				</Text>
-
-				<View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20, marginTop: 10 }}><Text>TOTAL VENTA PERIODO</Text>
-					<Text style={{ color: "white", backgroundColor: "#74BA74", paddingHorizontal: 20, paddingVertical: 5, marginLeft: 20, fontWeight: "bold" }}>{'$' + Math.floor(this.state.promedioVentas + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')}</Text></View>
-			</View>
 			<View style={{
-				flexDirection: "row", flexWrap: "wrap", justifyContent: "center",
-				width: 300
+				flexDirection: "row",
+				flexWrap: "wrap",
+				justifyContent: "center",
+				alignItems: "center"
 			}}>
-				{this.state.data.map((val, index) => {
-					if (index == 0) {
-						return null;
-					} else {
+				<View style={{
+					alignItems: 'center',
+					paddingHorizontal: 10,
+					width: 250
+				}}>
+					<TouchableOpacity style={styles.chartsSpace} onPress={() => { this.getVentasComercio(this.state.data[0] ? this.state.data[0].idComercio : null) }}>
+						<Arc
+							r={80}
+							percentage={this.state.perc}
+							fill={this.getColor(this.state.perc)}
+							opacity={1}
+							textCenter={
+								'$' +
+								Math.floor(this.state.valueToday + 0.5)
+									.toFixed()
+									.replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')
+							}
+						/>
+					</TouchableOpacity >
+
+					<Text style={{ color: "#FE5655", textAlign: "center", paddingHorizontal: 20 }}>
+						{this.state.error}
+					</Text>
+
+				</View>
+				<View style={{
+					flexDirection: "row-reverse", flexWrap: "wrap", justifyContent: "space-between", paddingHorizontal: 10, maxWidth: 350
+				}}>
+					{this.state.data.map((val, index) => {
+
 						return <TouchableOpacity key={index} style={styles.chartsSpace} onPress={() => { this.getVentasComercio(val.idComercio) }}>
 							<Arc
-								r={40}
+								r={35}
 								percentage={val.porcentajeVentasPeriodo}
 								fill={this.getColor(val.porcentajeVentasPeriodo)}
 								opacity={1}
@@ -341,75 +354,74 @@ export default class InformeSemanal extends React.Component {
 								textCenter={Math.floor(val.porcentajeVentasPeriodo + 0.5) + '%'}
 							/>
 						</TouchableOpacity >
-					}
 
-				})}
+
+					})}
+				</View>
+				<View style={{ alignItems: "center", justifyContent: "center", marginBottom: 20, marginTop: 10, width: "100%" }}>
+					<Text style={{ color: "white", backgroundColor: "#74BA74", paddingHorizontal: 20, paddingVertical: 5, marginLeft: 20, fontWeight: "bold" }}>TOTAL: {'$' + Math.floor(this.state.promedioVentas + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')}</Text>
+				</View>
+
 			</View>
-		</View>
 		</ScrollView>
 	}
 
-	consultaVentasComercio(){
+	consultaVentasComercio() {
 		return <ScrollView
-		refreshControl={
-			<RefreshControl
-				refreshing={this.state.refreshing}
-				onRefresh={this.getData.bind(this)}
-			/>
-		}>
+			refreshControl={
+				<RefreshControl
+					refreshing={this.state.refreshing}
+					onRefresh={this.getData.bind(this)}
+				/>
+			}>
 
-		<Text style={{ color: "#76BA75", fontSize: 20, marginTop: 20, textAlign: "center", marginBottom: 10 }}>
-			{this.state.data[0].fechaString}
-		</Text>
-
-		<Text style={{ color: "#959595", marginBottom: 20, textAlign: "center", paddingHorizontal: 20 }}>
-			Información en tiempo real de ventas totales de {this.state.nombreComercio}
+			<Text style={{ color: "#76BA75", fontSize: 20, marginTop: 20, textAlign: "center", marginBottom: 10 }}>
+				{this.state.data[0] ? this.state.data[0].fechaString : null}
 			</Text>
 
-		<View style={{
-			flexDirection: "row",
-			flexWrap: "wrap",
-			justifyContent: "center",
-			alignItems: "center"
-		}}>
-			<View style={{
-				alignItems: 'center',
-				paddingHorizontal: 10,
-				width: 300
-			}}>
-				<View style={styles.chartsSpace}>
-					<Arc
-						r={100}
-						percentage={this.state.perc}
-						fill={this.getColor(this.state.perc)}
-						opacity={1}
-						textCenter={
-							'$' +
-							Math.floor(this.state.valueToday + 0.5)
-								.toFixed()
-								.replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')
-						}
-					/>
-				</View >
+			<Text style={{ color: "#959595", marginBottom: 20, textAlign: "center", paddingHorizontal: 20 }}>
+				Información en tiempo real de ventas totales de {this.state.nombreComercio}
+			</Text>
 
-				<Text style={{ color: "#FE5655", textAlign: "center", paddingHorizontal: 20 }}>
-					{this.state.error}
-				</Text>
-
-				<View style={{ flexDirection: "row", alignItems: "center", marginBottom: 20, marginTop: 10 }}><Text>TOTAL VENTA PERIODO</Text>
-					<Text style={{ color: "white", backgroundColor: "#74BA74", paddingHorizontal: 20, paddingVertical: 5, marginLeft: 20, fontWeight: "bold" }}>{'$' + Math.floor(this.state.promedioVentas + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')}</Text></View>
-			</View>
 			<View style={{
-				flexDirection: "row", flexWrap: "wrap", justifyContent: "center",
-				width: 300
+				flexDirection: "row",
+				flexWrap: "wrap",
+				justifyContent: "center",
+				alignItems: "center"
 			}}>
-				{this.state.data.map((val, index) => {
-					if (index == 0) {
-						return null;
-					} else {
+				<View style={{
+					alignItems: 'center',
+					paddingHorizontal: 10,
+					width: 250
+				}}>
+					<View style={styles.chartsSpace}>
+						<Arc
+							r={80}
+							percentage={this.state.perc}
+							fill={this.getColor(this.state.perc)}
+							opacity={1}
+							textCenter={
+								'$' +
+								Math.floor(this.state.valueToday + 0.5)
+									.toFixed()
+									.replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')
+							}
+						/>
+					</View >
+
+					<Text style={{ color: "#FE5655", textAlign: "center", paddingHorizontal: 20 }}>
+						{this.state.error}
+					</Text>
+
+				</View>
+				<View style={{
+					flexDirection: "row-reverse", flexWrap: "wrap", justifyContent: "space-between", paddingHorizontal: 10, maxWidth: 350
+				}}>
+					{this.state.data.map((val, index) => {
+
 						return <View key={index} style={styles.chartsSpace}>
 							<Arc
-								r={40}
+								r={35}
 								percentage={val.porcentajeVentas}
 								fill={this.getColor(val.porcentajeVentas)}
 								opacity={1}
@@ -417,21 +429,40 @@ export default class InformeSemanal extends React.Component {
 								textCenter={Math.floor(val.porcentajeVentas + 0.5) + '%'}
 							/>
 						</View >
-					}
 
-				})}
+
+					})}
+				</View>
+				<View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginBottom: 20, marginTop: 10, width: "100%" }}>
+					<Text style={{ color: "white", backgroundColor: "#74BA74", paddingHorizontal: 20, paddingVertical: 5, marginLeft: 20, fontWeight: "bold" }}>TOTAL: {'$' + Math.floor(this.state.promedioVentas + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')}</Text></View>
+				<View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 20, marginTop: 10, width: "100%", paddingHorizontal: 30 }}>
+					<View style={{ justifyContent: "center", alignItems: "center" }}>
+						<Image source={require("../icons/VENTAS.png")} />
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>Numero de ventas</Text>
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>{this.state.data[0] ? this.state.data[0].numeroVentas : null}</Text>
+					</View>
+					<View style={{ justifyContent: "center", alignItems: "center" }}>
+						<Image source={require("../icons/CLIENTES.png")} />
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>Clientes fidelizados</Text>
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>{this.state.data[0] ? this.state.data[0].clientesFidelizados : null}</Text>
+					</View>
+					<View style={{ justifyContent: "center", alignItems: "center" }}>
+						<Image source={require("../icons/TICKET.png")} />
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>Promedio ticket</Text>
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>{this.state.data[0] ? this.state.data[0].promedioTicket : null}</Text>
+					</View>
+				</View>
 			</View>
-		</View>
-	</ScrollView>
+		</ScrollView>
 	}
 
 
-	getState(state){
-		if(state == "consultasVentasGrupo"){
+	getState(state) {
+		if (state == "consultasVentasGrupo") {
 			return this.consultasVentasGrupo()
-		}else if (state == "consultaDetalleVentasGrupo"){
+		} else if (state == "consultaDetalleVentasGrupo") {
 			return this.consultaDetalleVentasGrupo();
-		}else if (state == "consultaVentasComercio"){
+		} else if (state == "consultaVentasComercio") {
 			return this.consultaVentasComercio();
 		}
 	}
@@ -454,15 +485,12 @@ export default class InformeSemanal extends React.Component {
 				</View>
 
 				<View style={styles.title}>
-				<Image source={require('../icons/ICONO-INFORME-SEMANAL.png')} /><Text style={styles.texttitle}>INFORME SEMANAL</Text>
+					<Image source={require('../icons/ICONO-INFORME-DIARIO.png')} /><Text style={styles.texttitle}>INFORME DIARIO</Text>
 				</View>
 				<ImageBackground source={require('../images/fondopag.png')} style={styles.backgroundImage}>
-						{this.getState(this.state.actualView)}
+					{this.getState(this.state.actualView)}
 				</ImageBackground>
 			</View>
 		);
 	}
 }
-
-
-

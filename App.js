@@ -15,7 +15,7 @@ import Menu from './src/components/Menu';
 const RootDrawer = DrawerNavigator(
 	{
 
-		'ESTADO ACTUAL DE LOS COMERCIOS': {
+		'MENU': {
 			screen: Menu,
 
 		},
