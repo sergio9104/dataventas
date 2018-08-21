@@ -118,7 +118,7 @@ export default class InformeDiario extends React.Component {
 		this.setState({ refreshing: true });
 		request("consumos_" + ambiente + "/consultaventasgrupo-" + ambiente, { m: 8, periodo: "D" }, (res) => {
 			res.then((res) => {
-				console.log(res);
+		
 				if (res.datosPeriodos) {
 					this.setState({
 						data: res.datosPeriodos,
@@ -143,7 +143,7 @@ export default class InformeDiario extends React.Component {
 		this.setState({ refreshing: true });
 		request("consumos_" + ambiente + "/consultadetalleventasgrupo-" + ambiente, { fecha: fechaReferencia, periodo: "D" }, (res) => {
 			res.then((res) => {
-				console.log(res);
+		
 				if (res.datosComercios[0]) {
 					this.setState({
 						data: res.datosComercios,
@@ -169,7 +169,7 @@ export default class InformeDiario extends React.Component {
 		this.setState({ refreshing: true });
 		request("consumos_" + ambiente + "/consultaventascomercio-" + ambiente, { idComercio: idComercio, m: 8, periodo: "D" }, (res) => {
 			res.then((res) => {
-				console.log(res);
+		
 				if (res.datosPeriodos) {
 					this.setState({
 						data: res.datosPeriodos,
@@ -240,6 +240,7 @@ export default class InformeDiario extends React.Component {
 									.toFixed()
 									.replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')
 							}
+							isNumeric
 						/>
 					</TouchableOpacity >
 
@@ -250,9 +251,9 @@ export default class InformeDiario extends React.Component {
 
 				</View>
 				<View style={{
-					flexDirection: "row-reverse", flexWrap: "wrap", justifyContent: "space-between", paddingHorizontal: 10, maxWidth: 350
+					flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", paddingHorizontal: 10, maxWidth: 350
 				}}>
-					{this.state.data.map((val, index) => {
+					{this.state.data.reverse().map((val, index) => {
 						return <TouchableOpacity key={index} style={styles.chartsSpace} onPress={() => { this.getDetalleVentaGrupo(val.fechaReferencia) }}>
 							<Arc
 								r={35}
@@ -268,23 +269,23 @@ export default class InformeDiario extends React.Component {
 					})}
 				</View>
 				<View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginBottom: 20, marginTop: 10, width: "100%" }}>
-					<Text style={{ color: "white", backgroundColor: "#74BA74", paddingHorizontal: 20, paddingVertical: 5, marginLeft: 20, fontWeight: "bold" }}>TOTAL: {'$' + Math.floor(this.state.promedioVentas + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')}</Text>
+					<Text style={{ color: "white", backgroundColor: "#74BA74", paddingHorizontal: 20, paddingVertical: 5, fontWeight: "bold" }}>TOTAL: {'$' + Math.floor(this.state.promedioVentas + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')}</Text>
 				</View>
 				<View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 20, marginTop: 10, width: "100%", paddingHorizontal: 30 }}>
 					<View style={{ justifyContent: "center", alignItems: "center" }}>
 						<Image source={require("../icons/VENTAS.png")} />
-						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>Numero de ventas</Text>
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center", fontWeight:"bold" }}>NÚMERO DE VENTAS</Text>
 						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>{this.state.data[0] ? this.state.data[0].numeroVentas : null}</Text>
 					</View>
 					<View style={{ justifyContent: "center", alignItems: "center" }}>
 						<Image source={require("../icons/CLIENTES.png")} />
-						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>Clientes fidelizados</Text>
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center", fontWeight:"bold" }}>CLIENTES FIDELIZADOS</Text>
 						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>{this.state.data[0] ? this.state.data[0].clientesFidelizados : null}</Text>
 					</View>
 					<View style={{ justifyContent: "center", alignItems: "center" }}>
 						<Image source={require("../icons/TICKET.png")} />
-						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>Promedio ticket</Text>
-						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>{this.state.data[0] ? this.state.data[0].promedioTicket : null}</Text>
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center", fontWeight:"bold" }}>PROMEDIO TICKETS</Text>
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>{this.state.data[0] ? '$' + Math.floor(this.state.data[0].promedioTicket + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,') : null}</Text>
 					</View>
 				</View>
 			</View>
@@ -331,6 +332,7 @@ export default class InformeDiario extends React.Component {
 									.toFixed()
 									.replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')
 							}
+							isNumeric
 						/>
 					</TouchableOpacity >
 
@@ -340,9 +342,9 @@ export default class InformeDiario extends React.Component {
 
 				</View>
 				<View style={{
-					flexDirection: "row-reverse", flexWrap: "wrap", justifyContent: "space-between", paddingHorizontal: 10, maxWidth: 350
+					flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", paddingHorizontal: 10, maxWidth: 350
 				}}>
-					{this.state.data.map((val, index) => {
+					{this.state.data.reverse().map((val, index) => {
 
 						return <TouchableOpacity key={index} style={styles.chartsSpace} onPress={() => { this.getVentasComercio(val.idComercio) }}>
 							<Arc
@@ -359,7 +361,7 @@ export default class InformeDiario extends React.Component {
 					})}
 				</View>
 				<View style={{ alignItems: "center", justifyContent: "center", marginBottom: 20, marginTop: 10, width: "100%" }}>
-					<Text style={{ color: "white", backgroundColor: "#74BA74", paddingHorizontal: 20, paddingVertical: 5, marginLeft: 20, fontWeight: "bold" }}>TOTAL: {'$' + Math.floor(this.state.promedioVentas + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')}</Text>
+					<Text style={{ color: "white", backgroundColor: "#74BA74", paddingHorizontal: 20, paddingVertical: 5, fontWeight: "bold" }}>TOTAL: {'$' + Math.floor(this.state.promedioVentas + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')}</Text>
 				</View>
 
 			</View>
@@ -406,6 +408,7 @@ export default class InformeDiario extends React.Component {
 									.toFixed()
 									.replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')
 							}
+							isNumeric
 						/>
 					</View >
 
@@ -415,9 +418,9 @@ export default class InformeDiario extends React.Component {
 
 				</View>
 				<View style={{
-					flexDirection: "row-reverse", flexWrap: "wrap", justifyContent: "space-between", paddingHorizontal: 10, maxWidth: 350
+					flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", paddingHorizontal: 10, maxWidth: 350
 				}}>
-					{this.state.data.map((val, index) => {
+					{this.state.data.reverse().map((val, index) => {
 
 						return <View key={index} style={styles.chartsSpace}>
 							<Arc
@@ -434,22 +437,22 @@ export default class InformeDiario extends React.Component {
 					})}
 				</View>
 				<View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", marginBottom: 20, marginTop: 10, width: "100%" }}>
-					<Text style={{ color: "white", backgroundColor: "#74BA74", paddingHorizontal: 20, paddingVertical: 5, marginLeft: 20, fontWeight: "bold" }}>TOTAL: {'$' + Math.floor(this.state.promedioVentas + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')}</Text></View>
+					<Text style={{ color: "white", backgroundColor: "#74BA74", paddingHorizontal: 20, paddingVertical: 5, fontWeight: "bold" }}>TOTAL: {'$' + Math.floor(this.state.promedioVentas + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')}</Text></View>
 				<View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 20, marginTop: 10, width: "100%", paddingHorizontal: 30 }}>
 					<View style={{ justifyContent: "center", alignItems: "center" }}>
 						<Image source={require("../icons/VENTAS.png")} />
-						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>Numero de ventas</Text>
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center", fontWeight:"bold" }}>NÚMERO DE VENTAS</Text>
 						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>{this.state.data[0] ? this.state.data[0].numeroVentas : null}</Text>
 					</View>
 					<View style={{ justifyContent: "center", alignItems: "center" }}>
 						<Image source={require("../icons/CLIENTES.png")} />
-						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>Clientes fidelizados</Text>
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center", fontWeight:"bold" }}>CLIENTES FIDELIZADOS</Text>
 						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>{this.state.data[0] ? this.state.data[0].clientesFidelizados : null}</Text>
 					</View>
 					<View style={{ justifyContent: "center", alignItems: "center" }}>
 						<Image source={require("../icons/TICKET.png")} />
-						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>Promedio ticket</Text>
-						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>{this.state.data[0] ? this.state.data[0].promedioTicket : null}</Text>
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center", fontWeight:"bold" }}>PROMEDIO TICKETS</Text>
+						<Text style={{ color: "#959595", fontSize: 9, textAlign: "center" }}>{this.state.data[0] ? '$' + Math.floor(this.state.data[0].promedioTicket + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,') : null}</Text>
 					</View>
 				</View>
 			</View>

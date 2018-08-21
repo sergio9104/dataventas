@@ -52,7 +52,7 @@ export default class Arc extends Component {
 
   render() {
     return (
-      <View>
+      <View style={{alignItems:"center"}}>
         <Svg width={this.props.r * 2} height={this.props.r * 2}>
           <Circle
             cx={this.props.r}
@@ -84,7 +84,7 @@ export default class Arc extends Component {
             fill={"#989898"}
             textAnchor="middle"
             fontSize={
-              this.props.r / 4
+              this.props.isNumeric ? this.props.r / 6 : this.props.r / 4 
             }
             dy={
               this.props.r / 4
