@@ -66,7 +66,7 @@ export default class Arc extends Component {
               A ${this.props.r} ${this.props.r} 0 ${this.state.largeArc} 0 ${this.props.r + Math.cos(this.state.endAngle) * this.props.r} ${this.props.r - Math.sin(this.state.endAngle) * this.props.r}
               L ${this.props.r} ${this.props.r}
               `}
-            fill={this.props.fill}
+            fill={this.props.textBold ? '#58BB7A' : this.props.fill }
             opacity={this.props.opacity}
           />
 
@@ -96,7 +96,9 @@ export default class Arc extends Component {
           style={{
             textAlign: 'center',
             color: "#989898",
-            fontSize: 8,
+            fontSize: this.props.textBold ? 9 : 7,
+            maxWidth:70,
+            fontWeight:this.props.textBold ? "bold" : "normal"
           }}
           color={"#989898"}>
           {this.props.text}

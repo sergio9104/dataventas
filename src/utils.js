@@ -28,7 +28,7 @@ export const evaluateChildDrawerTitle = ({ navigation }) => ({
 const url = "http://seguridad-pru.us-east-2.elasticbeanstalk.com/";
 const url2 = "https://j864ogth2l.execute-api.us-east-2.amazonaws.com/";
 
-export const ambiente = "qa";
+export const ambiente = "pro";
 
 export const request = (dir, data, fn) => {
 	AsyncStorage.getItem("userInfo", (err,val) => {
