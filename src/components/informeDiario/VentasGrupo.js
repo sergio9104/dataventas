@@ -208,6 +208,7 @@ export default class InformeDiario extends React.Component {
 												.replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')
 										}
 										isNumeric
+										textBold
 									/>
 								</TouchableOpacity >
 

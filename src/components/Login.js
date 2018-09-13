@@ -142,7 +142,7 @@ export default class Login extends React.Component {
 	c
 
 	login(){
-		loginRequest("login", {user:this.state.user, pass:this.state.password, cdAplicacion:"APP_WEB"}).then((val)=>{
+		loginRequest("login", {user:this.state.user, pass:this.state.password, cdAplicacion:"APP_MOVIL"}).then((val)=>{
 			if(val.valid){
 				AsyncStorage.setItem("userInfo", JSON.stringify(val));
 				this.props.navigation.navigate('MENU');

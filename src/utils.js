@@ -25,7 +25,7 @@ export const evaluateChildDrawerTitle = ({ navigation }) => ({
 	title: navigation.state.key.substr(navigation.state.key.indexOf('_') + 1),
 });
 
-const url = "http://seguridad-pru.us-east-2.elasticbeanstalk.com/";
+const url = "https://seguridad.dataventas.com/";
 const url2 = "https://j864ogth2l.execute-api.us-east-2.amazonaws.com/";
 
 export const ambiente = "pro";

@@ -208,6 +208,7 @@ export default class DetalleVentasGrupoSemanal extends React.Component {
 												.replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')
 										}
 										isNumeric
+										textBold
 									/>
 								</TouchableOpacity >
 								<Text style={{ color: "#FE5655", textAlign: "center", paddingHorizontal: 20 }}>
