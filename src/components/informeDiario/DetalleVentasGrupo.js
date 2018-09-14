@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
 
 	},
 	innerContainer: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-	header: { backgroundColor: '#fff', padding: 10, paddingHorizontal: 15, paddingTop: Platform.OS === 'ios' ? 13 : 7, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+	header: { backgroundColor: '#F7F7F7', padding: 10, paddingHorizontal: 15, paddingTop: Platform.OS === 'ios' ? 13 : 7, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
 	login: {
 		flex: 1,
 	},
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: "center",
-		paddingHorizontal:20
+		paddingHorizontal: 20
 
 
 	},
@@ -106,7 +106,7 @@ export default class InformeDiarioDetalle extends React.Component {
 
 	getData() {
 		this.setState({ refreshing: true });
-		request("consumos_" + ambiente + "/consultadetalleventasgrupo-" + ambiente, { fecha:  this.props.navigation.getParam('date'), periodo: "D", m: 4 }, (res) => {
+		request("consumos_" + ambiente + "/consultadetalleventasgrupo-" + ambiente, { fecha: this.props.navigation.getParam('date'), periodo: "D", m: 8 }, (res) => {
 			res.then((res) => {
 
 				if (res.datosComercios[0]) {
@@ -132,7 +132,7 @@ export default class InformeDiarioDetalle extends React.Component {
 
 
 
-	
+
 	getColor(val) {
 		if (val >= 500) {
 			return "#3BA1DA"
@@ -161,14 +161,14 @@ export default class InformeDiarioDetalle extends React.Component {
 						<Icon name="md-menu" size={30} color='#000' />
 					</TouchableOpacity>
 					<TouchableOpacity onPress={() => {
-							this.props.navigation.navigate('MENU');
-						}}>
-						<Image source={require('../../images/header.png')} style={{ width: 200, height: 40, marginLeft: 20 }}></Image>
+						this.props.navigation.navigate('MENU');
+					}}>
+						<Image source={require('../../images/header.jpeg')} style={{ width: 200, height: 40, marginLeft: 20 }}></Image>
 					</TouchableOpacity>
 
 				</View>
 				<View style={styles.title}>
-				<TouchableOpacity onPress={() => this.props.navigation.navigate("INFORME DIARIO")}><Text> <Icon name="ios-arrow-back" size={26} color='#FFF' /></Text></TouchableOpacity><View style={{flexDirection:"row"}}><Image source={require('../../icons/ICONO-INFORME-DIARIO.png')} /><Text style={styles.texttitle}>INFORME DIARIO</Text></View><View></View>
+					<TouchableOpacity onPress={() => this.props.navigation.navigate("INFORME DIARIO")}><Text> <Icon name="ios-arrow-back" size={26} color='#FFF' /></Text></TouchableOpacity><View style={{ flexDirection: "row" }}><Image source={require('../../icons/ICONO-INFORME-DIARIO.png')} /><Text style={styles.texttitle}>INFORME DIARIO</Text></View><View></View>
 				</View>
 				<ImageBackground source={require('../../images/fondopag.png')} style={styles.backgroundImage}>
 					<ScrollView
@@ -196,7 +196,7 @@ export default class InformeDiarioDetalle extends React.Component {
 								alignItems: 'center',
 								paddingHorizontal: 10,
 								width: 250
-							}}><TouchableOpacity style={styles.chartsSpace} onPress={() => {this.props.navigation.navigate('VENTAS COMERCIO', { IdComercio: this.state.data[0] ? this.state.dataSelected.idComercio : null, date: this.props.navigation.getParam('date') })}}>
+							}}><TouchableOpacity style={styles.chartsSpace} onPress={() => { this.props.navigation.navigate('VENTAS COMERCIO', { IdComercio: this.state.data[0] ? this.state.dataSelected.idComercio : null, date: this.props.navigation.getParam('date') }) }}>
 									<Arc
 										r={80}
 										percentage={this.state.dataSelected.porcentajeVentasPeriodo}
@@ -216,23 +216,24 @@ export default class InformeDiarioDetalle extends React.Component {
 									{this.state.error}
 								</Text>
 							</View>
-							<View style={{
-								flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", paddingHorizontal: 10, width: 350
-							}}>
-								{this.state.dataReverse.map((val, index) => {
-									return <TouchableOpacity key={index} style={styles.chartsSpace}onPress={() => { this.props.navigation.navigate('VENTAS COMERCIO', { IdComercio: val.idComercio, date: this.props.navigation.getParam('date')}) }}>
-										<Arc
-											r={35}
-											percentage={val.porcentajeVentasPeriodo}
-											fill={this.getColor(val.porcentajeVentasPeriodo)}
-											opacity={1}
-											text={val.nombreComercio}
-											textCenter={Math.floor(val.porcentajeVentasPeriodo + 0.5) + '%'}
-											textBold={this.state.dataSelected.nombreComercio == val.nombreComercio}
-										/>
-									</TouchableOpacity >
-								})}
+							<View style={{width:350, height:130, paddingHorizontal: 10}}>
+								<ScrollView horizontal>
+									{this.state.dataReverse.map((val, index) => {
+										return <TouchableOpacity key={index} style={styles.chartsSpace} onPress={() => { this.props.navigation.navigate('VENTAS COMERCIO', { IdComercio: val.idComercio, date: this.props.navigation.getParam('date') }) }}>
+											<Arc
+												r={35}
+												percentage={val.porcentajeVentasPeriodo}
+												fill={this.getColor(val.porcentajeVentasPeriodo)}
+												opacity={1}
+												text={val.nombreComercio}
+												textCenter={Math.floor(val.porcentajeVentasPeriodo + 0.5) + '%'}
+												textBold={this.state.dataSelected.nombreComercio == val.nombreComercio}
+											/>
+										</TouchableOpacity >
+									})}
+								</ScrollView>
 							</View>
+
 							<View style={{ alignItems: "center", justifyContent: "center", marginBottom: 20, marginTop: 10, width: "100%" }}>
 								<Text style={{ color: "white", backgroundColor: "#74BA74", paddingHorizontal: 20, paddingVertical: 5, fontWeight: "bold" }}>TOTAL: {'$' + Math.floor(this.state.promedioVentas + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')}</Text>
 							</View>

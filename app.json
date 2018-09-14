@@ -2,7 +2,7 @@
   "expo": {
     "name": "Dataventas",
     "version": "1.0.0",
-    "icon": "./logo.jpg",
+    "icon": "./logo.png",
     "slug": "Dataventas-slug",
     "sdkVersion": "27.0.0",
     "ios": {

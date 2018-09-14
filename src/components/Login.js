@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
 
 	},
 	innerContainer: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-	header: { backgroundColor: '#fff', padding: 10, paddingHorizontal: 15, paddingTop: Platform.OS === 'ios' ? 13 : 7, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+	header: { backgroundColor: '#F7F7F7', padding: 10, paddingHorizontal: 15, paddingTop: Platform.OS === 'ios' ? 13 : 7, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
 	login: {
 		flex: 1,
 	},
@@ -163,7 +163,7 @@ export default class Login extends React.Component {
 						}}
 					>
 					</TouchableOpacity>
-					<Image source={require('../images/header.png')} style={{ width: 200, height: 40, marginLeft: 20 }}></Image>
+					<Image source={require('../images/header.jpeg')} style={{ width: 200, height: 40, marginLeft: 20 }}></Image>
 				</View>
 				<ImageBackground source={require('../images/fondo.png')} style={styles.backgroundImage}>
 					<ScrollView style={styles.login}>

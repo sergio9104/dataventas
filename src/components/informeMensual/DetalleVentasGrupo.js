@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
 
 	},
 	innerContainer: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-	header: { backgroundColor: '#fff', padding: 10, paddingHorizontal: 15, paddingTop: Platform.OS === 'ios' ? 13 : 7, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+	header: { backgroundColor: '#F7F7F7', padding: 10, paddingHorizontal: 15, paddingTop: Platform.OS === 'ios' ? 13 : 7, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
 	login: {
 		flex: 1,
 	},
@@ -163,7 +163,7 @@ export default class DetalleVentasGrupoMensual extends React.Component {
 					<TouchableOpacity onPress={() => {
 							this.props.navigation.navigate('MENU');
 						}}>
-						<Image source={require('../../images/header.png')} style={{ width: 200, height: 40, marginLeft: 20 }}></Image>
+						<Image source={require('../../images/header.jpeg')} style={{ width: 200, height: 40, marginLeft: 20 }}></Image>
 					</TouchableOpacity>
 
 				</View>
@@ -216,22 +216,22 @@ export default class DetalleVentasGrupoMensual extends React.Component {
 									{this.state.error}
 								</Text>
 							</View>
-							<View style={{
-								flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", paddingHorizontal: 10, width: 350
-							}}>
-								{this.state.dataReverse.map((val, index) => {
-									return <TouchableOpacity key={index} style={styles.chartsSpace} onPress={() => { this.props.navigation.navigate('VENTAS COMERCIO MENSUAL', { IdComercio: val.idComercio, date: this.props.navigation.getParam('date')}) }}>
-										<Arc
-											r={35}
-											percentage={val.porcentajeVentasPeriodo}
-											fill={this.getColor(val.porcentajeVentasPeriodo)}
-											opacity={1}
-											text={val.nombreComercio}
-											textCenter={Math.floor(val.porcentajeVentasPeriodo + 0.5) + '%'}
-											textBold={this.state.dataSelected.nombreComercio == val.nombreComercio}
-										/>
-									</TouchableOpacity >
-								})}
+							<View style={{width:350, height:130, paddingHorizontal: 10}}>
+								<ScrollView horizontal>
+									{this.state.dataReverse.map((val, index) => {
+										return <TouchableOpacity key={index} style={styles.chartsSpace} onPress={() => { this.props.navigation.navigate('VENTAS COMERCIO MENSUAL', { IdComercio: val.idComercio, date: this.props.navigation.getParam('date') }) }}>
+											<Arc
+												r={35}
+												percentage={val.porcentajeVentasPeriodo}
+												fill={this.getColor(val.porcentajeVentasPeriodo)}
+												opacity={1}
+												text={val.nombreComercio}
+												textCenter={Math.floor(val.porcentajeVentasPeriodo + 0.5) + '%'}
+												textBold={this.state.dataSelected.nombreComercio == val.nombreComercio}
+											/>
+										</TouchableOpacity >
+									})}
+								</ScrollView>
 							</View>
 							<View style={{ alignItems: "center", justifyContent: "center", marginBottom: 20, marginTop: 10, width: "100%" }}>
 								<Text style={{ color: "white", backgroundColor: "#74BA74", paddingHorizontal: 20, paddingVertical: 5, fontWeight: "bold" }}>TOTAL: {'$' + Math.floor(this.state.promedioVentas + 0.5).toFixed().replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')}</Text>
