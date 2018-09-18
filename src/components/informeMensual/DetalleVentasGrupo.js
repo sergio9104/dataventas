@@ -108,11 +108,16 @@ export default class DetalleVentasGrupoMensual extends React.Component {
 		this.setState({ refreshing: true });
 		request("consumos_" + ambiente + "/consultadetalleventasgrupo-" + ambiente, { fecha:  this.props.navigation.getParam('date'), periodo: "M", m: 4 }, (res) => {
 			res.then((res) => {
-
 				if (res.datosComercios[0]) {
+					let dataReverse = res.datosComercios.slice().reverse();
+					let dataTwoDimesions = [];
+					for (let x = 0; x < dataReverse.length / 4; x++) {
+						dataTwoDimesions.push(dataReverse.slice(((4 * x)), ((4 * x) + 4)));
+					}
+
 					this.setState({
 						data: res.datosComercios,
-						dataReverse: res.datosComercios.slice().reverse(),
+						dataReverse: dataTwoDimesions,
 						dataSelected: res.datosComercios[0],
 						promedioVentas: res.totalVentasPeriodo,
 						nombreComercio: res.nombreGrupoComercio,
@@ -196,41 +201,47 @@ export default class DetalleVentasGrupoMensual extends React.Component {
 								alignItems: 'center',
 								paddingHorizontal: 10,
 								width: 250
-							}}><TouchableOpacity style={styles.chartsSpace} onPress={() => {this.props.navigation.navigate('VENTAS COMERCIO MENSUAL', { IdComercio: this.state.data[0] ? this.state.dataSelected.idComercio : null, date: this.props.navigation.getParam('date') })}}>
-									<Arc
-										r={80}
-										percentage={this.state.dataSelected.porcentajeVentasPeriodo}
-										fill={this.getColor(this.state.dataSelected.porcentajeVentasPeriodo)}
-										opacity={1}
-										textCenter={
-											'$' +
-											Math.floor(this.state.dataSelected.totalVentasPeriodo + 0.5)
-												.toFixed()
-												.replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')
-										}
-										isNumeric
-										textBold
-									/>
-								</TouchableOpacity >
+							}}><TouchableOpacity style={styles.chartsSpace} onPress={() => { this.props.navigation.navigate('VENTAS COMERCIO', { IdComercio: this.state.data[0] ? this.state.dataSelected.idComercio : null, date: this.props.navigation.getParam('date') }) }}>
+							<Arc
+								r={80}
+								percentage={100}
+								fill={this.getColor(100)}
+								opacity={1}
+								textCenter={
+									'$' +
+									Math.floor(this.state.promedioVentas + 0.5)
+										.toFixed()
+										.replace(/(\d)(?=(\d{3})+(,|$))/g, '$1,')
+								}
+								isNumeric
+								textBold
+							/>
+						</TouchableOpacity >
 								<Text style={{ color: "#FE5655", textAlign: "center", paddingHorizontal: 20 }}>
 									{this.state.error}
 								</Text>
 							</View>
-							<View style={{width:350, height:130, paddingHorizontal: 10}}>
+							<View style={{ width: 350, height: 380, paddingHorizontal: 10 }}>
 								<ScrollView horizontal>
-									{this.state.dataReverse.map((val, index) => {
-										return <TouchableOpacity key={index} style={styles.chartsSpace} onPress={() => { this.props.navigation.navigate('VENTAS COMERCIO MENSUAL', { IdComercio: val.idComercio, date: this.props.navigation.getParam('date') }) }}>
-											<Arc
-												r={35}
-												percentage={val.porcentajeVentasPeriodo}
-												fill={this.getColor(val.porcentajeVentasPeriodo)}
-												opacity={1}
-												text={val.nombreComercio}
-												textCenter={Math.floor(val.porcentajeVentasPeriodo + 0.5) + '%'}
-												textBold={this.state.dataSelected.nombreComercio == val.nombreComercio}
-											/>
-										</TouchableOpacity >
-									})}
+									<View style={{ display: "flex", flexDirection: "column", flexWrap: "wrap" }}>
+										{this.state.dataReverse.map((val, index) => {
+											return <View key={index} style={{ display: "flex", flexDirection: "row", height: 120 }}>
+												{val.map((val2, index2) => {
+													return <TouchableOpacity key={index2} style={styles.chartsSpace} onPress={() => { this.props.navigation.navigate('VENTAS COMERCIO', { IdComercio: val2.idComercio, date: this.props.navigation.getParam('date') }) }}>
+														<Arc
+															r={35}
+															percentage={val2.porcentajeVentasPeriodo}
+															fill={this.getColor(val2.porcentajeVentasPeriodo)}
+															opacity={1}
+															text={val2.nombreComercio}
+															textCenter={Math.floor(val2.porcentajeVentasPeriodo + 0.5) + '%'}
+														/>
+													</TouchableOpacity >
+												})}
+											</View>
+										})}
+									</View>
+
 								</ScrollView>
 							</View>
 							<View style={{ alignItems: "center", justifyContent: "center", marginBottom: 20, marginTop: 10, width: "100%" }}>
