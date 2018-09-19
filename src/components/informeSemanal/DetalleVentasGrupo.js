@@ -200,7 +200,7 @@ export default class DetalleVentasGrupoSemanal extends React.Component {
 								alignItems: 'center',
 								paddingHorizontal: 10,
 								width: 250
-							}}><TouchableOpacity style={styles.chartsSpace} onPress={() => { this.props.navigation.navigate('VENTAS COMERCIO', { IdComercio: this.state.data[0] ? this.state.dataSelected.idComercio : null, date: this.props.navigation.getParam('date') }) }}>
+							}}><TouchableOpacity style={styles.chartsSpace} onPress={() => { this.props.navigation.navigate('VENTAS COMERCIO SEMANAL', { IdComercio: this.state.data[0] ? this.state.dataSelected.idComercio : null, date: this.props.navigation.getParam('date') }) }}>
 									<Arc
 										r={80}
 										percentage={100}

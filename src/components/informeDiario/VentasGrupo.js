@@ -124,9 +124,6 @@ export default class InformeDiario extends React.Component {
 		})
 	}
 
-
-
-	
 	getColor(val) {
 		if (val >= 500) {
 			return "#3BA1DA"
